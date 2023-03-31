@@ -36,7 +36,6 @@ const calculator = require('../calculations/index');
 const RAPESEED_FORAGE = require('../crops/neccc/rapeseed-forage');
 const PEA_WINTER = require('../crops/neccc/pea-winter');
 const OATS_WINTER = require('../crops/neccc/oats-winter');
-const { calc } = require('../calculations/final-seeding-rate');
 
 // helper functions
 async function promptInput(question, callback){
