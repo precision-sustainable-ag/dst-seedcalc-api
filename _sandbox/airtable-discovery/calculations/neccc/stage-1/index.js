@@ -1,8 +1,8 @@
 
 const finalSeedingRate = require('./final-seeding-rate');
 const mixRatioModifier = require('./mix-ratio-modifier');
-const poundsSeedPerAcreInMix = require('../calculations/percent-pounds-of-seed-per-acre-in-mix');
-const singleSpeciesSeedingRate = require('../calculations/percent-of-single-species-seeding-rate');
+const poundsSeedPerAcreInMix = require('./percent-pounds-of-seed-per-acre-in-mix');
+const singleSpeciesSeedingRate = require('./percent-of-single-species-seeding-rate');
 const soilFertilityModifer = require('./soil-fertility-modifier');
 const plantingMethodModifer = require('./planting-method-modifier');
 const seedsPerAcre = require('./seeds-per-acre');

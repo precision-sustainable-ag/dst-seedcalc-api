@@ -3,8 +3,14 @@
  * is actually the sum of Seeds Per Acre for the entire mix. 
  */
 const RAW = `
-    {Seeds in Mix}/1680400
+    {Seeds per acre}/{sum of seeds per acre in mix}
 `;
+
+
+const VARS = {
+    'Seeds per acre': (calcs) => calcs.seedsPerAcre,
+    'sum of seeds per acre in mix': (calcs) => calcs.sumSeedsPerAcreInMix,
+};
 
 function calc({
     seedsPerAcre,

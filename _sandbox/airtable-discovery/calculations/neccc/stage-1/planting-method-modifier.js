@@ -12,6 +12,15 @@ IF(
     )
 )
 `
+
+const VARS = {
+    'Planting Method': (userInput) => userInput.plantingMethod,
+    'Aerial Planting Method Coefficient (from Cover Crop)': (crop) => crop.aerialPlantingCoeff,
+    'Broadcast with Cultivation, No Packing Coefficient (from Cover Crop)': (crop) => crop.bcastCultivNoPackingCoeff,
+    'Broadcast with No Cultivation, No Packing Coefficient (from Cover Crop)': (crop) => crop.bcastNoCultivNoPackingCoeff,
+    'Default': () => 1,
+};
+
 /**
  * Planting Method is gathered from user input
  * 

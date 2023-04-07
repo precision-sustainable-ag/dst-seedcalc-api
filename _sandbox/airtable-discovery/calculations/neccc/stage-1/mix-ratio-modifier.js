@@ -9,6 +9,12 @@ IF({Soil Fertility Modifier}>0,{Soil Fertility Modifier}, 1)
 // we have defaulted to 1 based on seedcalc airtable vars at time of writing this. 
 const SUM_OF_TYPE = 1; 
 
+const VARS = {
+    'Soil Fertility Modifier': (calcs) => calcs.soilFertilityModifier,
+    'Planting Method Modifier': (calcs) => calcs.plantingMethodModifier,
+    'SUM - Cover Crop Type (from Seeding Rate Calculator)': (calcs) => calcs.sumCoverCropType,
+};
+
 function calc({
     sumOfType,
     soilFertilityModifier,
