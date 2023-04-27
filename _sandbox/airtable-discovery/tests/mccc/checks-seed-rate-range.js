@@ -16,19 +16,6 @@ const OATS_SPRING = require('../../crops/mccc/oats-spring');
 // state setup
 const MIX = [PEA_WINTER, OATS_SPRING, RAPESEED];
 
-/**
- * NOTES:
- * 
- * which of the following is applicable to "Single Species Seeding Rate - MCCC"? 
- *  - user input                        [  ]
- *  - value associated with the crop    [  ]
- *  - has default, but is editable      [  ]
- * 
- * which of the following is applicable to "Seeds Per Pound - MCCC"? 
- *  - user input                        [  ]
- *  - value associated with the crop    [  ]
- *  - has default, but is editable      [  ]
- */
 async function main(mix){
     if(!mix) mix = MIX;
 
@@ -59,15 +46,16 @@ async function main(mix){
         // get user inputs for this crop.
         const plantingMethod = crop.userInput.plantingMethod;
         // perform calcs
-        const mixSeedingRate = calculator.mixMaking.mixSeedingRate({sumSpeciesInMix,crop});
+        const mixSeedingRate = calculator.mixMaking.mixSeedingRate({sumSpeciesInMix,crop:crop.nrcs}); // !!THIS IS THE ONLY DIFFERENCE FOR NRCS
         const plantingMethodModifier = calculator.mixMaking.plantingMethodModifier({plantingMethod, crop});
         const finalMixSeedingRate = calculator.mixMaking.finalMixSeedingRate({mixSeedingRate,plantingMethodModifier});
-
+        const validSeedRateRange = calculator.checks.seedingRateRange.validSeedRateRange({finalMixSeedingRate,mixSeedingRate})
         // add to calcs state
         crop.calcs = {
             mixSeedingRate,
             plantingMethodModifier,
             finalMixSeedingRate,
+            validSeedRateRange,
         }
 
         // add to mix calcs state
@@ -75,7 +63,7 @@ async function main(mix){
     
     // MIX SPECIFIC CALCULATIONS
     for(let crop of mix){
-
+        
     }
 
     // create print sheet.
@@ -85,6 +73,7 @@ async function main(mix){
         console.log('Mix Seeding Rate - MCCC', crop.calcs.mixSeedingRate, `(${crop.calcs.mixSeedingRate.toFixed(2)})`);
         console.log('Planting Method Modifier', crop.calcs.plantingMethodModifier);
         console.log('Final Mix Seeding Rate - MCCC', crop.calcs.finalMixSeedingRate, `(${crop.calcs.finalMixSeedingRate.toFixed(2)})`);
+        console.log('EQIP Seeding Rate Range', crop.calcs.validSeedRateRange, `(${crop.calcs.finalMixSeedingRate ? 1 : 0})`);
         console.log('-------------------------------------\n\n')
     }
 

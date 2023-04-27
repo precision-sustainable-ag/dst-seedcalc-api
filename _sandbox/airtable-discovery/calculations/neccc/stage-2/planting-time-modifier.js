@@ -39,15 +39,10 @@ function calc({
     crop = {}
 } = {}){
 
-    console.log(plantingDate)
     if(!(plantingDate instanceof Date)) plantingDate = new Date(plantingDate);
 
     const earlyFallStartDate = new Date(VARS['Early Fall/Winter Seeding Rate Start (from Cover Crop)'](crop));
     const earlyFallEndDate = new Date(VARS['Early Fall/Winter Seeding Rate End (from Cover Crop)'](crop));
-
-    console.log(plantingDate)
-    console.log(earlyFallStartDate)
-    console.log(earlyFallEndDate)
 
     if(plantingDate >= earlyFallStartDate && plantingDate <= earlyFallEndDate) {
         return VARS['Early Fall Planting Coefficient (from Cover Crop)'](crop);

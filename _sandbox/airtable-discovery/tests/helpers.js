@@ -36,6 +36,11 @@ const SUM_OF_TYPE = (T, mix) => {
     return counts[T] ?? 0;
 }
 
+const SUM_SPECIES_IN_MIX = (mix) => {
+    const count = MIX_TYPE_COUNTS(mix);
+    return Object.keys(count).length;
+}
+
 module.exports = {
-    promptInput, IS_MIX, MIX_TYPE_COUNTS, SUM_OF_TYPE
+    promptInput, IS_MIX, MIX_TYPE_COUNTS, SUM_OF_TYPE, SUM_SPECIES_IN_MIX
 }

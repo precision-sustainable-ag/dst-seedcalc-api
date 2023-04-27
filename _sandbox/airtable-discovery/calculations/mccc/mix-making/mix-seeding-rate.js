@@ -10,6 +10,7 @@ const VARS = {
  * 
  * The formula divides the value of "Single Species Seeding Rate - MCCC" by 
  * the value of "SUM of Species in Mix (from Calculation Mode)".
+ *
  */
 function calc({
     sumSpeciesInMix,
