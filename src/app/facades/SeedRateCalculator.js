@@ -15,32 +15,38 @@ class SeedRateCalculator {
         }
     }
 
-    static factory({mix, userInput}){
-        if(!userInput?.council) throw new Error('User Input object must include council property.');
-        if(!userInput?.regions) throw new Error('User Input object must include regions array.');
-        if(!Array.isArray(mix)){
-            throw new Error('Mix must be an array');
-        }
+    /**
+     * Factory method to create instances of the class based on the council.
+     *
+     * @param {Object} options - The options object.
+     * @param {Array|string} options.mix - The mix or mixes for the instance.
+     * @param {string} options.council - The council for which to create the instance.
+     * @param {Object} [options.userInput] - The optional user input for the instance.
+     * 
+     * @returns {Object} The created instance.
+     * 
+     * @throws {Error} If council or mix is not provided or council is invalid.
+     */
+    static factory({mix, council, userInput}){
+        if(!council) throw new Error('council is a required parameter.');
+        council = council.toLowerCase();
 
-        userInput.council = userInput.council.toLowerCase();
+        if(typeof mix === 'undefined') throw new Error('mix is a required parameter.');
+
+        if(!Array.isArray(mix)) mix = [mix];
         
-        if(!Object.keys(this.FACTORY_MAP).includes(userInput.council)){
-            throw new Error(`Invalid Council: ${userInput.council}`);
+        if(!Object.keys(this.FACTORY_MAP).includes(council)){
+            throw new Error(`Invalid Council: ${council}`);
         }
         
-        
-        const instance = this.FACTORY_MAP[userInput.council]({mix, userInput});
+        const instance = this.FACTORY_MAP[council]({mix, userInput});
 
         instance.mix = mix;
         instance.userInput = userInput;
-        instance.council = userInput.council;
+        instance.council = council;
 
         return instance.init();
     }
-
-    /**
-     * MEMBER FUNCTIONS
-     */
 
     /**
      * Initalize the Calculator.
@@ -59,9 +65,18 @@ class SeedRateCalculator {
     }
 
     /**
-     * Planting Method Modifier - 
+     * Planting Method Modifier -
+     * Calculates the planting method modifier for a given crop and planting method.
+     *
+     * @param {Object} crop - The crop object to calculate the planting method modifier for.
+     * @param {Object} options - The options object.
+     * @param {string} options.plantingMethod - The planting method to calculate the modifier for.
+     * 
+     * @returns {number} The planting method modifier for the given crop and planting method.
      */
     plantingMethodModifier(crop, {plantingMethod}){
+        if(!plantingMethod) plantingMethod = this.userInput?.plantingMethod;
+
         plantingMethod = plantingMethod.toLowerCase().trim();
 
         if(typeof crop?.coefficents?.plantingMethods[plantingMethod] === 'undefined'){
@@ -71,17 +86,48 @@ class SeedRateCalculator {
         return crop.coefficents.plantingMethods[plantingMethod];
     }
 
+    /**
+     * 
+     * Gets the default planting method modifier.
+     * * Generally this defaults to 1, meaning the seeding rate will be unchanged.
+     * 
+     * @returns {number} - defualt planting method modifier.
+     */
     getDefaultPlantingMethodModifier(){
         return 1;
     }
 
-
     /**
-     * TODO:
      * Pounds for purchase
+     * 
+     * Mix Seeding Rate -
+     * returns the Single Species Seeding Rate multipled by the percentOfRate, 
+     * If no percentOfRate is given, the default value for the council will be used.
+     * Planting method modifier can be a number, or an object containing the params needed for plantingMethodModifier calculations.
+     * 
+     * @param {Object} crop - The crop object.
+     * @param {number} crop.coefficients.singleSpeciesSeedingRate - The single species seeding rate coefficient for the crop.
+     * @param {Object} options - The options object.
+     * @param {number} [options.acres] - The number of acres used to calculate the total number of pounds for purchase.
+     * @param {number|Object} [options.mixSeedingRate] - Either the Mix Seeding Rate, or the parameters to calculate the mix seeding rate. If no parameters are given, and a mix seeding rate is not given, one will be calculated with crop's default values.
+     * @param {number} [options.mixSeedingRate.singleSpeciesSeedingRate] - The single species seeding rate value for the crop. If not provided, it is set to the crop's single species seeding rate coefficient.
+     * @param {number} [options.mixSeedingRate.percentOfRate] - The percent of rate value for the mix seeding rate. If not provided, it is set to the default percent of single species seeding rate.
+     * @param {number|Object} [options.mixSeedingRate.plantingMethodModifier] - The planting method modifier value or object. If it is an object, it should have the plantingMethod property to determine the planting method modifier value.
+     * @param {number} [options.mixSeedingRate.managementImpactOnMix] - The management impact on mix value.
+     * @param {number} [options.mixSeedingRate.germination] - The germination value.
+     * @param {number} [options.mixSeedingRate.purity] - The purity value.
+     * 
+     * @throws {Error} When management impact on mix, germination or purity values are not within the allowed range.
+     * 
+     * @returns {number} The mix seeding rate value.
      */
-    poundsForPurchase(crop, {}){
+    poundsForPurchase(crop, {mixSeedingRate, acres}={}){
+        if(typeof mixSeedingRate === 'undefined') mixSeedingRate = this.mixSeedingRate(crop);
+        else if(typeof mixSeedingRate === 'object') mixSeedingRate = this.mixSeedingRate(crop, mixSeedingRate);
 
+        if(!acres) acres = 1;
+
+        return mixSeedingRate * acres;
     }
 
     /**
@@ -228,10 +274,27 @@ class SeedRateCalculator {
         return mixSeedingRate;
     }
 
+    /**
+     * Gets the default percent of single species seeding rate. 
+     * This means that only a certain percantage of single species seeding rate will be applied for the given mix. 
+     * 
+     * In general this will always be 1 for non-mixes, and the default value for mixes is 1/mixDiversity
+     * 
+     * @returns {number} Default Percent of Single Species Seeding Rate
+     */
     getDefaultPercentOfSingleSpeciesSeedingRate(crop, {}={}){
         return 1/this.mixDiversity;
     }
 
+    /**
+     * Generally this is an operation function that triggers when a mix is created or edited.
+     * * If you simply need the `speciesInMix` object, you can access it through the public property `speciesInMix`.
+     * 
+     * * If you want to get the count of a specific group based on the group name, you can call the public function 
+     * `getCountOfGroupInMix(G)` where `G` is the group label.
+     * 
+     * @returns {object} returns an object containing crop groups as the key, and the count of that group for the given mix. 
+     */
     sumSpeciesInMix(){
         const mix = this.mix;
         const counts = {};
@@ -244,6 +307,13 @@ class SeedRateCalculator {
         return this.speciesInMix = counts;
     }
 
+    /**
+     * Gets the count of a specific group based on the group name, 
+     * 
+     * @param {string} G - label of group to get count for. 
+     * 
+     * @returns {number} - defaults to 0 if the group is not in the mix.
+     */
     getCountOfGroupInMix(G){
         return this.speciesInMix[G] ?? 0;
     }
