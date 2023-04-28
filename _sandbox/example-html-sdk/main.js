@@ -39,18 +39,35 @@ const MOCK_USER_INPUT = {
  * Adams County
  * ID = 180
  * 
- * To get the regions you can use the following steps:
- * 1) have the user select a State
- *      endpoint: {species_selector_service}/v2/regions?locality=state&context=seed_calc
- *      NOTE: here we use the context=seed_calc to ensure we only get states applicable to the seed calc application.
- * 2) once the user has selected a state we can get the child regions for that state, 
- *    this could include multiple region "types" ex: County , Zone , etc.
- *    a user should be prompted to pick 1 item from each "region type".
- *      endpoint: {species_selector_service}/v2/regions/{stateId}
- *      NOTE: we used {stateId} but you can perform this call using the id value from any region, but not all regions have child regions.
  * 
- * NOTE: when compiling the users regions, 
- *       you should treat the state region id and all child region ids the same and contain them in the same array.
+ * This can be retrieved 
+ * from the region object the user selects when picking a state.
+ * 
+ * A list of states can be acquired through the following HTTP request:
+ *   GET https://{selector-api}/v2/regions?locality=state&context=seed_calc
+ *   NOTE: here we use the context=seed_calc to ensure we only get states applicable to the seed calc application.
+ *
+ * Typically once you a user has selected a state, you will then prompt them to select child regions. 
+ * You can get the 1st level of child regions for a given region with the following HTTP Request:
+ *      GET https://{selector-api}/v2/regions/{region_id}
+ *      NOTE: This will only include 1st level children for the region_id given, 
+ *            it is possible that a selected child region could have its own children, but this is uncommon.
+ * It is most common that a region will only have 1 type of child region ( ex: County, or Plant Hardiness Zone)
+ * But it is possible that a region could have any number of types of child regions. 
+ * Typically the user should only select 1 of each type of child region, 
+ * selecting multiple child regions will most commonly cause attribute key collision producing unreliable data sets.
+ * You should only select multipule regions of a specific child type if you know you will not create collision errors.
+ * 
+ * the council information can be gathered from an item in the states array
+ * through this object path:
+ *
+ * state.parents[0].shorthand
+ * 
+ * NOTE: when compiling the regions query parameter array, 
+ *       it should include the id's for all regions that the user has selected.
+ *       Example: const regions = [18,180]
+ *          here you can see our regions contains the ids for Indiana(18) and Adams County(180) , 
+ *          where Adams County is a child region of Indiana.
  * 
  * 
  */
@@ -74,6 +91,13 @@ async function getCouncil(){
 /**
  * STEP 2) CREATE MIX
  * Create a mix utilizing the Species Selector API
+ * where each item in the array is either
+ *
+ * - the data object returned from the HTTP request
+ *   GET https://{selector-api}/v2/crops/{crop_id}?regions={region_id}&context=seed_calc  
+ *
+ * - an instantiated instance of the Crop Object class.
+ * 
  * NOTE: ( if building mix off user input, these calls would be made on user click )
  * 
  * 
