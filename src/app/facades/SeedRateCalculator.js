@@ -9,9 +9,9 @@ class SeedRateCalculator {
         'mccc': ({mix, userInput}) => new MWSeedRateCalculator({mix, userInput}),
     }
 
-    constructor({mix, userInput} = {}){
+    constructor({mix, council, userInput} = {}){
         if(mix){
-            return SeedRateCalculator.factory({mix, userInput});
+            return SeedRateCalculator.factory({mix, council, userInput});
         }
     }
 
