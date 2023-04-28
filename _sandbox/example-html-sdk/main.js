@@ -1,5 +1,5 @@
 
-const SPECIES_SELECTOR_SERVICE_URL = 'http://localhost:3001';
+const SPECIES_SELECTOR_SERVICE_URL = 'https://developapi.covercrop-selector.org';
 
 const SELECTOR_API_CLIENT = axios.create({
   baseURL: SPECIES_SELECTOR_SERVICE_URL,
