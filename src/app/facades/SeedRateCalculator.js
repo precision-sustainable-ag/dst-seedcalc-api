@@ -63,18 +63,35 @@ class SeedRateCalculator {
         this.sumSpeciesInMix();
         return this;
     }
+    /**
+     * Get Crop Instance
+     */
+    getCrop(obj){
+        if(obj instanceof Crop) return obj;
+
+        if(!obj?.id) throw new Error('Crop object ID could not be located. (path: crop?.id)');
+
+        const id = obj.id;
+
+        if(typeof this.crops[id] === 'undefined') throw new Error(`Crop with ID: ${id} is not part of this calculators mix.`);
+
+        return this.crops[id];
+    }
 
     /**
      * Planting Method Modifier -
      * Calculates the planting method modifier for a given crop and planting method.
      *
-     * @param {Object} crop - The crop object to calculate the planting method modifier for.
+     * @param {Object} crop - The crop object to calculate the planting method modifier for. MUST be part of the mix used to instantiate the calculator instance.
      * @param {Object} options - The options object.
      * @param {string} options.plantingMethod - The planting method to calculate the modifier for.
      * 
      * @returns {number} The planting method modifier for the given crop and planting method.
      */
-    plantingMethodModifier(crop, {plantingMethod}){
+    plantingMethodModifier(crop, {plantingMethod}={}){
+
+        crop = this.getCrop(crop);
+
         if(!plantingMethod) plantingMethod = this.userInput?.plantingMethod;
 
         plantingMethod = plantingMethod.toLowerCase().trim();
@@ -122,6 +139,7 @@ class SeedRateCalculator {
      * @returns {number} The mix seeding rate value.
      */
     poundsForPurchase(crop, {mixSeedingRate, acres}={}){
+        crop = this.getCrop(crop);
         if(typeof mixSeedingRate === 'undefined') mixSeedingRate = this.mixSeedingRate(crop);
         else if(typeof mixSeedingRate === 'object') mixSeedingRate = this.mixSeedingRate(crop, mixSeedingRate);
 
@@ -147,6 +165,7 @@ class SeedRateCalculator {
      * @returns {number} The plants per acre for the given crop
      */
     plantsPerAcre(crop, {percentSurvival, seedsPerAcre, seedsPerPound, mixSeedingRate, percentOfRate}={}){
+        crop = this.getCrop(crop);
         if(!seedsPerAcre){
             seedsPerAcre = this.seedsPerAcre(crop, {seedsPerPound, mixSeedingRate, percentOfRate});
         }
@@ -177,6 +196,7 @@ class SeedRateCalculator {
      * @returns {number} The plants per acre for the given crop
      */    
     plantsPerSqft(crop, {percentSurvival, seedsPerAcre, seedsPerPound, mixSeedingRate, percentOfRate}={}){
+        crop = this.getCrop(crop);
         const plantPerAcre = this.plantsPerAcre(crop, {percentSurvival, seedsPerAcre, seedsPerPound, mixSeedingRate, percentOfRate});
         const ACRES_PER_SQFT = 43560;
 
@@ -199,6 +219,7 @@ class SeedRateCalculator {
      * @returns {number} The seeds per acre for the given crop
      */
     seedsPerAcre(crop, {seedsPerPound, mixSeedingRate, percentOfRate}={}) {
+        crop = this.getCrop(crop);
         if(!mixSeedingRate) {
             mixSeedingRate = crop?.calcs?.mixSeedingRate;
         }
@@ -236,6 +257,7 @@ class SeedRateCalculator {
      * @returns {number} The mix seeding rate value.
      */
     mixSeedingRate(crop, { singleSpeciesSeedingRate, percentOfRate, plantingMethodModifier, managementImpactOnMix, germination, purity } = {}){
+        crop = this.getCrop(crop);
         if(!percentOfRate){
             percentOfRate = this.getDefaultPercentOfSingleSpeciesSeedingRate();
         }
@@ -283,6 +305,7 @@ class SeedRateCalculator {
      * @returns {number} Default Percent of Single Species Seeding Rate
      */
     getDefaultPercentOfSingleSpeciesSeedingRate(crop, {}={}){
+        crop = this.getCrop(crop);
         return 1/this.mixDiversity;
     }
 
@@ -331,22 +354,6 @@ class MWSeedRateCalculator extends SeedRateCalculator {
     constructor({mix, userInput}){
         super();
     }
-
-    // init(){
-    //     super.init();
-
-    //     for(let [id, crop] of Object.entries(this.crops)){
-    //         this.mixSeedingRate(crop);
-    //     }
-
-    //     return this;
-    // }
-
-
-    // getDefaultPercentOfSingleSpeciesSeedingRate(){
-    //     return 1/this.mixDiversity;
-    // }
-
 
 }
 
