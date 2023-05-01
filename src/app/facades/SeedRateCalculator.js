@@ -304,8 +304,7 @@ class SeedRateCalculator {
      * 
      * @returns {number} Default Percent of Single Species Seeding Rate
      */
-    getDefaultPercentOfSingleSpeciesSeedingRate(crop, {}={}){
-        crop = this.getCrop(crop);
+    getDefaultPercentOfSingleSpeciesSeedingRate(){
         return 1/this.mixDiversity;
     }
 
