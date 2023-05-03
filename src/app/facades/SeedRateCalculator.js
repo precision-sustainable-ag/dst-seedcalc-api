@@ -358,14 +358,15 @@ class SeedRateCalculator {
             purity
         } = options;
 
+        
         if(!percentOfRate){
             percentOfRate = this.getDefaultPercentOfSingleSpeciesSeedingRate();
         }
-
+        
         if(!singleSpeciesSeedingRate){
             singleSpeciesSeedingRate = crop.coefficents.singleSpeciesSeedingRate
         }
-
+        
         let mixSeedingRate = singleSpeciesSeedingRate * percentOfRate;
 
         if(plantingMethodModifier){
@@ -401,7 +402,7 @@ class SeedRateCalculator {
      * 
      * @returns {number} Default Percent of Single Species Seeding Rate
      */
-    getDefaultPercentOfSingleSpeciesSeedingRate(){
+    getDefaultPercentOfSingleSpeciesSeedingRate(crop){
         return 1/this.mixDiversity;
     }
 

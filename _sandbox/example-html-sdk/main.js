@@ -176,6 +176,8 @@ async function main(){
     printMixOverview(calculator);
 
     AdjustProportionsPage_Pea(mix[0],calculator);
+    AdjustProportionsPage_Rapeseed(mix[2],calculator);
+    ReviewYourMixPage_Oat(mix[1],calculator);
 
     // Create userInput containers for each crop in the mix
     // for(let crop of mix){
