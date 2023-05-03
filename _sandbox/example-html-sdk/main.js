@@ -179,54 +179,6 @@ async function main(){
     AdjustProportionsPage_Rapeseed(mix[2],calculator);
     ReviewYourMixPage_Oat(mix[1],calculator);
 
-    // Create userInput containers for each crop in the mix
-    // for(let crop of mix){
-    //     customCropValues[crop.id] = {}
-    // }
-
-    // // We are going to hard code custom crop values to emulate user input.
-    // const rapeseed = mix[2]; // we know rapeseed is at idnex 2 (see getMix function. )
-
-    // customCropValues[rapeseed.id] = {
-    //     plantingMethod: null,
-    //     singleSpeciesSeedingRate: 3, // if this is null, a default value will be generated.
-    //     percentOfRate: 0.25, // if this is null, a default value will be generated.
-    //     plantingMethodModifier: null, // if this is null, it will be calculated using plantingMethod
-    //     managementImpactOnMix: null, // if null, the managementImpactOnMix will not be considered ( no additional calculation will occur. )
-    //     germination: null, // if null, the % germination will not be considered ( no additional calculation will occur. )
-    //     purity: null, // if null, the % purity will not be considered ( no additional calculation will occur. ) 
-    //     seedsPerPound: null, 
-    //     mixSeedingRate: null, 
-    //     percentSurvival:null, 
-    //     seedsPerAcre: null, 
-    //     acres: null, // if null, defaults to 1
-    // }
-
-
-    // const PEA_WINTER = mix[0]
-    // const pm = calculator.plantingMethodModifier(PEA_WINTER);
-
-    // const bulkSeedingRate = calculator.mixSeedingRate(PEA_WINTER,{managementImpactOnMix:0.57, germination:0.85, purity:0.95});
-    // // here we pre-calculated the bulk mix seeding rate and passed in the value,
-    // const pfp = calculator.poundsForPurchase(PEA_WINTER,{acres:50,mixSeedingRate:bulkSeedingRate});
-    // // but you could also just pass in the parameters to calculate the bulk mix seeding rate to this function directly.
-    // const pfp2 = calculator.poundsForPurchase(PEA_WINTER, {acres: 50, managementImpactOnMix:0.57, germination:0.85, purity:0.95})
-    // //NOTE: bulk mix seeding rate requires managementImpactOnMix, germination, purity, 
-    // //      but if those parameters are not given a mix seeding rate will be generated without considering those parameters.
-    
-    // console.log(PEA_WINTER.label);
-    // console.log('> plantingMethodModifier',pm);
-    // console.log('> bulkSeedingRate',bulkSeedingRate);
-    // console.log('> poundsForPurchase',pfp);
-    
-    /**
-     * Print frunctions can be found in the printer.js
-     */
-    // printMix(mix);
-    // printUserInput(userInput);
-    // printMixOverview(calculator);
-    // printMixRatiosPageDefault(calculator);
-    // printMixRatiosPageCustom(calculator,userInput);
 
 }
 
