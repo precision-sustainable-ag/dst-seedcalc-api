@@ -1,5 +1,43 @@
 const { Crop } = require("./Crop");
 
+class Options {
+
+    static CALCULATED_PROPS = {
+        plantingMethodModifier: (calculator, crop, options) => calculator.plantingMethodModifier(crop, options),
+        mixSeedingRate: (calculator, crop, options) => calculator.mixSeedingRate(crop,options),
+        seedsPerAcre: (calculator, crop, options) => calculator.seedsPerAcre(crop,options),
+    }
+
+    constructor(calculator, keys=[], {crop, options}) {
+        this.calculator = calculator;
+        this.options = options;
+        this.crop = crop;
+        this.keys = keys;
+        this.props = {};
+        // next we check for calculated options that were not provided.
+        for(let key of keys){
+
+            if(options[key]) {
+                this[key] = options[key];
+                this.props[key] = options[key];
+                continue;
+            };
+            
+            if(Options.CALCULATED_PROPS[key]){
+                const getter = Options.CALCULATED_PROPS[key];
+                const val = getter(calculator, crop, options);
+                this[key] = val;
+                this.props[key] = val;
+            }
+
+        }
+        
+    }
+
+}
+
+
+
 /**
  * CALCULATOR INTERFACE
  */
@@ -9,11 +47,15 @@ class SeedRateCalculator {
         'mccc': ({mix, userInput}) => new MWSeedRateCalculator({mix, userInput}),
     }
 
+    static PROPS;
+
     constructor({mix, council, userInput} = {}){
         if(mix){
             return SeedRateCalculator.factory({mix, council, userInput});
         }
     }
+
+
 
     /**
      * Factory method to create instances of the class based on the council.
@@ -63,6 +105,7 @@ class SeedRateCalculator {
         this.sumSpeciesInMix();
         return this;
     }
+
     /**
      * Get Crop Instance
      */
@@ -78,6 +121,34 @@ class SeedRateCalculator {
         return this.crops[id];
     }
 
+    setProps(){
+
+        this.PROPS = {};
+        this.PROPS.plantingMethodModifier = ['plantingMethod'];
+        this.PROPS.mixSeedingRate = ['singleSpeciesSeedingRate', 'percentOfRate', 'plantingMethodModifier', 'managementImpactOnMix', 'germination', 'purity', ...this.PROPS.plantingMethodModifier];
+        this.PROPS.poundsForPurchase = ['acres', 'mixSeedingRate', ...this.PROPS.mixSeedingRate];
+        this.PROPS.seedsPerAcre = ['mixSeedingRate','seedsPerPound', ...this.PROPS.mixSeedingRate];
+        this.PROPS.plantsPerAcre = ['seedsPerAcre','percentSurvival', ...this.PROPS.seedsPerAcre];
+        this.PROPS.plantsPerSqft = ['seedsPerAcre','percentSurvival', ...this.PROPS.seedsPerAcre];
+
+        return this.PROPS;
+    }
+
+    /**
+     * Props interface
+     */
+    props(P){
+        if(!this.PROPS) this.setProps();
+
+        const props = this.PROPS;
+
+        if(P){
+            return props[P];
+        }
+
+        return props;
+    }
+
     /**
      * Planting Method Modifier -
      * Calculates the planting method modifier for a given crop and planting method.
@@ -88,11 +159,19 @@ class SeedRateCalculator {
      * 
      * @returns {number} The planting method modifier for the given crop and planting method.
      */
-    plantingMethodModifier(crop, {plantingMethod}={}){
+    plantingMethodModifier(crop, options={}){
 
         crop = this.getCrop(crop);
 
+        options = new Options(this, this.props('plantingMethodModifier'), {crop,options})
+
+        let plantingMethod = options?.plantingMethod;
+
         if(!plantingMethod) plantingMethod = this.userInput?.plantingMethod;
+
+        if(!plantingMethod){
+            return this.getDefaultPlantingMethodModifier(); 
+        }
 
         plantingMethod = plantingMethod.toLowerCase().trim();
 
@@ -117,35 +196,29 @@ class SeedRateCalculator {
     /**
      * Pounds for purchase
      * 
-     * Mix Seeding Rate -
-     * returns the Single Species Seeding Rate multipled by the percentOfRate, 
-     * If no percentOfRate is given, the default value for the council will be used.
-     * Planting method modifier can be a number, or an object containing the params needed for plantingMethodModifier calculations.
-     * 
      * @param {Object} crop - The crop object.
-     * @param {number} crop.coefficients.singleSpeciesSeedingRate - The single species seeding rate coefficient for the crop.
      * @param {Object} options - The options object.
      * @param {number} [options.acres] - The number of acres used to calculate the total number of pounds for purchase.
-     * @param {number|Object} [options.mixSeedingRate] - Either the Mix Seeding Rate, or the parameters to calculate the mix seeding rate. If no parameters are given, and a mix seeding rate is not given, one will be calculated with crop's default values.
-     * @param {number} [options.mixSeedingRate.singleSpeciesSeedingRate] - The single species seeding rate value for the crop. If not provided, it is set to the crop's single species seeding rate coefficient.
-     * @param {number} [options.mixSeedingRate.percentOfRate] - The percent of rate value for the mix seeding rate. If not provided, it is set to the default percent of single species seeding rate.
-     * @param {number|Object} [options.mixSeedingRate.plantingMethodModifier] - The planting method modifier value or object. If it is an object, it should have the plantingMethod property to determine the planting method modifier value.
-     * @param {number} [options.mixSeedingRate.managementImpactOnMix] - The management impact on mix value.
-     * @param {number} [options.mixSeedingRate.germination] - The germination value.
-     * @param {number} [options.mixSeedingRate.purity] - The purity value.
+     * @param {number} [options.mixSeedingRate] - The mix seeding rate to use for calculations. This will override the need to perform the mix seeding rate calculation inline.
+     * @param {number} [options.singleSpeciesSeedingRate] - The single species seeding rate value for the crop. If not provided, it is set to the crop's single species seeding rate coefficient.
+     * @param {number} [options.percentOfRate] - The percent of rate value for the mix seeding rate. If not provided, it is set to the default percent of single species seeding rate.
+     * @param {number|Object} [options.plantingMethodModifier] - The planting method modifier value or object. If it is an object, it should have the plantingMethod property to determine the planting method modifier value.
+     * @param {number} [options.managementImpactOnMix] - The management impact on mix value.
+     * @param {number} [options.germination] - The germination value.
+     * @param {number} [options.purity] - The purity value.
      * 
      * @throws {Error} When management impact on mix, germination or purity values are not within the allowed range.
      * 
      * @returns {number} The mix seeding rate value.
      */
-    poundsForPurchase(crop, {mixSeedingRate, acres}={}){
+    poundsForPurchase(crop, options={}){
         crop = this.getCrop(crop);
-        if(typeof mixSeedingRate === 'undefined') mixSeedingRate = this.mixSeedingRate(crop);
-        else if(typeof mixSeedingRate === 'object') mixSeedingRate = this.mixSeedingRate(crop, mixSeedingRate);
 
-        if(!acres) acres = 1;
+        options = new Options(this, this.props('poundsForPurchase'), {crop,options})
 
-        return mixSeedingRate * acres;
+        if(!options.acres) options.acres = 1;
+
+        return options.mixSeedingRate * options.acres;
     }
 
     /**
@@ -153,30 +226,36 @@ class SeedRateCalculator {
      * Calculates the plants per acre for a given crop
      * 
      * @param {Crop} crop - The name of the crop
-     * @param {Object} [config={}] - An optional object containing configuration parameters
-     * @param {number} [config.percentSurvival=0.85] - The percentage of seeds that survive and grow
-     * @param {number} [config.seedsPerAcre] - The number of seeds per acre of the crop
-     * @param {number} [config.seedsPerPound] - The number of seeds per pound of the crop
-     * @param {number} [config.mixSeedingRate] - The mix seeding rate for the crop
-     * @param {number} [config.percentOfRate] - The percentage of the mix seeding rate to use
+     * @param {Object} [options={}] - An optional object containing configuration parameters
+     * @param {number} [options.percentSurvival=0.85] - The percentage of seeds that survive and grow
+     * @param {number} [options.seedsPerAcre] - The number of seeds per acre of the crop
+     * @param {number} [options.seedsPerPound] - The number of seeds per pound of the crop
+     * @param {number} [options.mixSeedingRate] - The mix seeding rate to use for calculations. This will override the need to perform the mix seeding rate calculation inline.
+     * @param {number} [options.singleSpeciesSeedingRate] - The single species seeding rate value for the crop. If not provided, it is set to the crop's single species seeding rate coefficient.
+     * @param {number} [options.percentOfRate] - The percent of rate value for the mix seeding rate. If not provided, it is set to the default percent of single species seeding rate.
+     * @param {number|Object} [options.plantingMethodModifier] - The planting method modifier value or object. If it is an object, it should have the plantingMethod property to determine the planting method modifier value.
+     * @param {number} [options.managementImpactOnMix] - The management impact on mix value.
+     * @param {number} [options.germination] - The germination value.
+     * @param {number} [options.purity] - The purity value.
+     * 
      * 
      * @throws {Error} If percent survival is not a value between 0 and 1 (inclusive)
      * 
      * @returns {number} The plants per acre for the given crop
      */
-    plantsPerAcre(crop, {percentSurvival, seedsPerAcre, seedsPerPound, mixSeedingRate, percentOfRate}={}){
+    plantsPerAcre(crop, options={}){
         crop = this.getCrop(crop);
-        if(!seedsPerAcre){
-            seedsPerAcre = this.seedsPerAcre(crop, {seedsPerPound, mixSeedingRate, percentOfRate});
+
+        options = new Options(this, this.props('plantsPerAcre'), {crop, options})
+
+        if(!options.percentSurvival){
+            options.percentSurvival = 0.85;
         }
-        if(!percentSurvival){
-            percentSurvival = 0.85;
-        }
-        if(percentSurvival > 1 || percentSurvival < 0){
+        if(options.percentSurvival > 1 || options.percentSurvival < 0){
             throw new Error('Percent survival must be a value between 0 and 1  ( inclusive ).');
         }
-
-        return seedsPerAcre * percentSurvival;
+        
+        return options.seedsPerAcre * options.percentSurvival;
     }
 
     /**
@@ -184,20 +263,27 @@ class SeedRateCalculator {
      * Calculates the plants per square foot for a given crop
      * 
      * @param {Crop} crop - The name of the crop
-     * @param {Object} [config={}] - An optional object containing configuration parameters
-     * @param {number} [config.percentSurvival=0.85] - The percentage of seeds that survive and grow
-     * @param {number} [config.seedsPerAcre] - The number of seeds per acre of the crop
-     * @param {number} [config.seedsPerPound] - The number of seeds per pound of the crop
-     * @param {number} [config.mixSeedingRate] - The mix seeding rate for the crop
-     * @param {number} [config.percentOfRate] - The percentage of the mix seeding rate to use
+     * @param {Object} [options={}] - An optional object containing configuration parameters
+     * @param {number} [options.percentSurvival=0.85] - The percentage of seeds that survive and grow
+     * @param {number} [options.seedsPerAcre] - The number of seeds per acre of the crop
+     * @param {number} [options.seedsPerPound] - The number of seeds per pound of the crop
+     * @param {number} [options.mixSeedingRate] - The mix seeding rate to use for calculations. This will override the need to perform the mix seeding rate calculation inline.
+     * @param {number} [options.percentOfRate] - The percentage of the mix seeding rate to use
+     * @param {number} [options.singleSpeciesSeedingRate] - The single species seeding rate value for the crop. If not provided, it is set to the crop's single species seeding rate coefficient.
+     * @param {number} [options.percentOfRate] - The percent of rate value for the mix seeding rate. If not provided, it is set to the default percent of single species seeding rate.
+     * @param {number|Object} [options.plantingMethodModifier] - The planting method modifier value or object. If it is an object, it should have the plantingMethod property to determine the planting method modifier value.
+     * @param {number} [options.managementImpactOnMix] - The management impact on mix value.
+     * @param {number} [options.germination] - The germination value.
+     * @param {number} [options.purity] - The purity value.
+     * 
      * 
      * @throws {Error} If percent survival is not a value between 0 and 1 (inclusive)
      * 
      * @returns {number} The plants per acre for the given crop
      */    
-    plantsPerSqft(crop, {percentSurvival, seedsPerAcre, seedsPerPound, mixSeedingRate, percentOfRate}={}){
+    plantsPerSqft(crop, options={}){
         crop = this.getCrop(crop);
-        const plantPerAcre = this.plantsPerAcre(crop, {percentSurvival, seedsPerAcre, seedsPerPound, mixSeedingRate, percentOfRate});
+        const plantPerAcre = this.plantsPerAcre(crop, options);
         const ACRES_PER_SQFT = 43560;
 
         return plantPerAcre / ACRES_PER_SQFT;
@@ -208,32 +294,34 @@ class SeedRateCalculator {
      * Calculates the seeds per acre for a given crop
      * 
      * @param {Crop} crop - The name of the crop
-     * @param {Object} [config] - An optional object containing configuration parameters
-     * @param {number} [config.seedsPerPound] - The number of seeds per pound of the crop
-     * @param {number} [config.mixSeedingRate] - The mix seeding rate for the crop
-     * @param {number} [config.percentOfRate] - The percentage of the mix seeding rate to use
+     * @param {Object} [options] - An optional object containing configuration parameters
+     * @param {number} [options.seedsPerPound] - The number of seeds per pound of the crop
+     * @param {number} [options.mixSeedingRate] - The mix seeding rate to use for calculations. This will override the need to perform the mix seeding rate calculation inline.
+     * @param {number} [options.singleSpeciesSeedingRate] - The single species seeding rate value for the crop. If not provided, it is set to the crop's single species seeding rate coefficient.
+     * @param {number} [options.percentOfRate] - The percent of rate value for the mix seeding rate. If not provided, it is set to the default percent of single species seeding rate.
+     * @param {number|Object} [options.plantingMethodModifier] - The planting method modifier value or object. If it is an object, it should have the plantingMethod property to determine the planting method modifier value.
+     * @param {number} [options.managementImpactOnMix] - The management impact on mix value.
+     * @param {number} [options.germination] - The germination value.
+     * @param {number} [options.purity] - The purity value.
+     * 
      * 
      * @throws {Error} If no mix seeding rate is provided or invalid parameters to calculate mix seeding rate
      * @throws {Error} If seeds per pound data could not be located
      * 
      * @returns {number} The seeds per acre for the given crop
      */
-    seedsPerAcre(crop, {seedsPerPound, mixSeedingRate, percentOfRate}={}) {
+    seedsPerAcre(crop, options={}) {
         crop = this.getCrop(crop);
-        if(!mixSeedingRate) {
-            mixSeedingRate = crop?.calcs?.mixSeedingRate;
-        }
-        if(!mixSeedingRate){
-            mixSeedingRate = this.mixSeedingRate(crop, {percentOfRate});
-        }
-        if(!seedsPerPound) {
-            seedsPerPound = crop.seedsPerPound;
+        options = new Options(this, this.props('seedsPerAcre'), {crop, options})
+
+        if(!options.seedsPerPound) {
+            options.seedsPerPound = crop.seedsPerPound;
         }
         
-        if(!mixSeedingRate) throw new Error('No Mix Seeding Rate provided, or invailid parameters to calculate mix seeding rate.');
-        if(!seedsPerPound) throw new Error('Could not locate seeds per pound data.');
+        if(!options.mixSeedingRate) throw new Error('No Mix Seeding Rate provided, or invailid parameters to calculate mix seeding rate.');
+        if(!options.seedsPerPound) throw new Error('Could not locate seeds per pound data.');
 
-        return seedsPerPound * mixSeedingRate;
+        return options.seedsPerPound * options.mixSeedingRate;
     }
 
     /**
@@ -256,8 +344,20 @@ class SeedRateCalculator {
      * 
      * @returns {number} The mix seeding rate value.
      */
-    mixSeedingRate(crop, { singleSpeciesSeedingRate, percentOfRate, plantingMethodModifier, managementImpactOnMix, germination, purity } = {}){
+    mixSeedingRate(crop, options = {}){
         crop = this.getCrop(crop);
+
+        options = new Options(this, this.props('mixSeedingRate'), {crop, options})
+        
+        let {
+            percentOfRate, 
+            singleSpeciesSeedingRate, 
+            plantingMethodModifier, 
+            managementImpactOnMix, 
+            germination, 
+            purity
+        } = options;
+
         if(!percentOfRate){
             percentOfRate = this.getDefaultPercentOfSingleSpeciesSeedingRate();
         }
@@ -266,30 +366,27 @@ class SeedRateCalculator {
             singleSpeciesSeedingRate = crop.coefficents.singleSpeciesSeedingRate
         }
 
-        let mixSeedingRate = crop.calcs.mixSeedingRate = singleSpeciesSeedingRate * percentOfRate;
+        let mixSeedingRate = singleSpeciesSeedingRate * percentOfRate;
 
         if(plantingMethodModifier){
-            if(typeof plantingMethodModifier === 'object' && plantingMethodModifier?.plantingMethod){
-                plantingMethodModifier = this.plantingMethodModifier(crop, plantingMethodModifier);
-            }
             mixSeedingRate = mixSeedingRate * plantingMethodModifier;
         }
 
         if(managementImpactOnMix){
-            if(managementImpactOnMix <= 0) throw new Error('Management Impact on mix must be greater than 0%');
-            if(managementImpactOnMix > 1) throw new Error('Management Impact on mix must be less than or equal to 100%');
+            if(managementImpactOnMix <= 0) throw new Error('Management Impact on mix must be greater than 0');
+            if(managementImpactOnMix > 1) throw new Error('Management Impact on mix must be less than or equal to 1');
             mixSeedingRate = mixSeedingRate + ( mixSeedingRate * managementImpactOnMix);
         }
 
         if(germination){
-            if(germination <= 0) throw new Error('Germination must be greater than 0%');
-            if(germination > 1) throw new Error('Germination must be less than or equal to 100%');
+            if(germination <= 0) throw new Error('Germination must be greater than 0');
+            if(germination > 1) throw new Error('Germination must be less than or equal to 1');
             mixSeedingRate = mixSeedingRate / germination;
         }
 
         if(purity){
-            if(purity <= 0) throw new Error('Purity must be greater than 0%');
-            if(purity > 1) throw new Error('Purity must be less than or equal to 100%');
+            if(purity <= 0) throw new Error('Purity must be greater than 0');
+            if(purity > 1) throw new Error('Purity must be less than or equal to 1');
             mixSeedingRate = mixSeedingRate / purity;
         }
 
@@ -359,5 +456,5 @@ class MWSeedRateCalculator extends SeedRateCalculator {
 
 
 module.exports = {
-    SeedRateCalculator, MWSeedRateCalculator
+    Options, SeedRateCalculator, MWSeedRateCalculator
 }

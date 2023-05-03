@@ -26,12 +26,20 @@ function printMixOverview(calculator){
     console.log('Is Mix?', calculator.isMix);
     console.log('Mix Diversity:',calculator.mixDiversity); // county of group types in mix
     console.log('Species In Mix:', calculator.speciesInMix);
+
+    const cropLabels = calculator.mix.map(crop => crop.label);
+    console.log('Crops in Mix:',cropLabels);
+
     console.log('--------------------------------------------\n\n')
 }
 
 function printMixRatiosPageDefault(calculator){
+    let crop;
+    // both crop declarations achieve the same thing.
+    // they both get a Crop Object instance of the crop in the calculators mix for the id of 148.
+    crop = calculator.crops[148]; // explicity get crop from crops object.
+    crop = calculator.getCrop({id:148}); // get crop using the getCrop function where id is a property of object parameter.
 
-    const crop = calculator.crops[148];
     const percentOfRate = calculator.getDefaultPercentOfSingleSpeciesSeedingRate(crop);
     const mixSeedingRate = calculator.mixSeedingRate(crop);
     const seedsPerAcre = calculator.seedsPerAcre(crop);
