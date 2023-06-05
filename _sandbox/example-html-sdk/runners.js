@@ -115,7 +115,7 @@ function ReviewYourMixPage_Oat(oat_spring, calculator){
         plantingMethodModifier: options.plantingMethodModifier, // if this is null, it will be calculated with the plantingMethod option.
         managementImpactOnMix: options.managementImpactOnMix // this does not have a default value, and if it is null or undefined the operation will be ignored.
     });
-
+    
     const mixSeedingRateAfterPurityAndGermination = calculator.mixSeedingRate(oat_spring, {
         singleSpeciesSeedingRate: options.singleSpeciesSeedingRate,
         percentOfRate: options.percentOfRate,

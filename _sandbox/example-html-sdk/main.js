@@ -179,7 +179,6 @@ async function main(){
     AdjustProportionsPage_Rapeseed(mix[2],calculator);
     ReviewYourMixPage_Oat(mix[1],calculator);
 
-
 }
 
 
