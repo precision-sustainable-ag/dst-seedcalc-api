@@ -302,9 +302,188 @@ class MWCrop extends Crop {
 
         return this;
     }
+    
+}
 
+class NECrop extends Crop {
 
+    constructor(data){
+        super();
+    }
 
+    static props = [
+        {
+            key: 'attributes',
+            required: true,
+            props: [
+                {
+                    key: 'Coefficients',
+                    required: true,
+                    props: [
+                        {
+                            key: 'Single Species Seeding Rate', 
+                            required: true, 
+                            setter: (inst, val) => inst.coefficents.singleSpeciesSeedingRate = Number(val.values[0])
+                        },
+                        {
+                            key: 'Broadcast Coefficient', 
+                            required: true,
+                            setter: (inst, val) => inst.coefficents.plantingMethods.broadcast = Number(val.values[0])
+                        },
+                        {
+                            key: 'Aerial Coefficient', 
+                            required: true,
+                            setter: (inst, val) => inst.coefficents.plantingMethods.aerial = Number(val.values[0])
+                        },
+                        {
+                            key: 'Precision Coefficient', 
+                            required: true,
+                            setter: (inst, val) => inst.coefficents.plantingMethods.precision = Number(val.values[0])
+                        },
+                        {
+                            key: '% Live Seed to Emergence', 
+                            required: true,
+                            setter: (inst, val) => inst.coefficents.liveSeedToEmergence = Number(val.values[0])
+                        },
+                        {
+                            key: 'Max % Allowed in Mix',
+                            required: true,
+                            setter: (inst, val) => inst.coefficents.maxInMix = Number(val.values[0])
+                        },
+                        {
+                            key: '% Chance of Winter Survial', 
+                            required: true,
+                            setter: (inst, val) => inst.coefficents.chanceWinterSurvival = Number(val.values[0])
+                        },
+                    ]
+                },
+                {
+                    key: 'Planting Information', 
+                    required: true,
+                    props: [
+                        {
+                            key: 'Seed Count', 
+                            required: true,
+                            setter: (inst, val) => inst.seedsPerPound = Number(val.values[0])
+                        },
+                        {   
+                            key: 'Planting Methods', 
+                            required: true, 
+                            checks: [{validate: (val) => { return Array.isArray(val.values); }, summary: 'Must be an array.'}],
+                            setter: (inst, val) => inst.plantingMethods = val.values
+                        },
+                    ]
+                },
+                {
+                    key: 'Soil Conditions', 
+                    required: true,
+                    props: [
+                        {
+                            key: 'Soil Drainage', 
+                            required: true,
+                            setter: (inst, val) => inst.soilDrainage = val.values
+                        },
+                    ]
+                },
+                {
+                    key: 'NRCS', 
+                    required: false,
+                    props: [
+                        {
+                            key: 'Single Species Seeding Rate', 
+                            required: false,
+                            setter: (inst, val) => inst.nrcs.singleSpeciesSeedingRate = Number(val.values[0])
+                        },
+                    ]
+                },
+                {
+                    key: 'Planting and Growth Windows', 
+                    required: false,
+                    props: [
+                        {   
+                            key: 'Reliable Establishment', 
+                            required: false, 
+                            setter: (inst, val) => {
+                                const container = inst.plantingDates.reliableEstablishement = [];
+                                for(let range of val.values){
+                                    let [start, end] = Crop.interpretDateRange(range);
+                                    container.push({
+                                        start, end, range
+                                    });
+                                }
+                            }
+                        },
+                        {   
+                            key: 'Freeze/Moisture Risk to Establishment', 
+                            required: false, 
+                            setter: (inst, val) => {
+                                const container = inst.plantingDates.riskToEstablishment = [];
+                                for(let range of val.values){
+                                    let [start, end] = Crop.interpretDateRange(range);
+                                    container.push({
+                                        start, end, range
+                                    });
+                                }
+                            }
+                        },
+                        {   
+                            key: 'Early Seeding Date', 
+                            required: false, 
+                            setter: (inst, val) => {
+                                const container = inst.plantingDates.earlySeeding = [];
+                                for(let range of val.values){
+                                    let [start, end] = Crop.interpretDateRange(range);
+                                    container.push({
+                                        start, end, range
+                                    });
+                                }
+                            }
+                        },
+                        {   
+                            key: 'Late Seeding Date', 
+                            required: false, 
+                            setter: (inst, val) => {
+                                const container = inst.plantingDates.lateSeeding = [];
+                                for(let range of val.values){
+                                    let [start, end] = Crop.interpretDateRange(range);
+                                    container.push({
+                                        start, end, range
+                                    });
+                                }
+                            }
+                        },
+                        {   
+                            key: 'Average Frost', 
+                            required: false, 
+                            setter: (inst, val) => {
+                                const container = inst.plantingDates.averageFrost = [];
+                                for(let range of val.values){
+                                    let [start, end] = Crop.interpretDateRange(range);
+                                    container.push({
+                                        start, end, range
+                                    });
+                                }
+                            }
+                        },
+                    ]
+                },
+            ]
+        }
+    ];
+
+    init(){
+        super.init();
+
+        this.coefficents = { plantingMethods: {} };
+        this.plantingDates = { }
+        this.nrcs = { }
+        this.custom = this.raw.custom ?? {};
+
+        // validates and sets props.
+        this.validateProps(MWCrop.props);
+
+        return this;
+    }
 
 }
 
