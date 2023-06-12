@@ -4,7 +4,7 @@
 function AdjustProportionsPage_Pea(pea_winter, calculator){
     const crop = calculator.getCrop(pea_winter); // loads standardized crop interface, this is best for when you need to access properties of the crop itself, because this object will be standardized across all councils. and provides standard dot notation property accessors.
     const defaultSingleSpeciesSeedingRatePLS = crop.coefficents.singleSpeciesSeedingRate;
-    const defaultMixSeedingRate = calculator.mixSeedingRate(pea_winter); // here you can use either the pea_winter response object, or the crop interface. it does not matter.
+    const defaultMixSeedingRate = calculator.mixSeedingRate(pea_winter,{plantingMethodModifier:1}); // here you can use either the pea_winter response object, or the crop interface. it does not matter.
     const seedsPerAcre = calculator.seedsPerAcre(pea_winter) 
     const plantPerAcre = calculator.plantsPerAcre(pea_winter);
     const plantPerSqft = calculator.plantsPerSqft(pea_winter);
@@ -143,4 +143,209 @@ function ReviewYourMixPage_Oat(oat_spring, calculator){
     console.log('Bulk Seeding Rate',bulkSeedingRate)
     console.log('Acres',options.acres ?? 1)
     console.log('Pounds for purchase',poundsForPurchase);
+}
+
+
+
+/**
+ * mimics data found at Airtable as of 6/9/2023
+ * https://airtable.com/appwVLKETedegCglQ/tblbF2v9Pc94kE7e3/viwKAiORg1e0SkzkQ?blocks=hide
+ */
+async function nrcsCheckSeedingRateWithNoNRCSStandardData(calculator){
+
+    console.log('\n\n-------------------------------------')
+    console.log('Running NRCS Seeding Rate Check')
+    console.log('-------------------------------------')
+
+    console.log('Using default values:')
+    const result = calculator.nrcs.mixPassesSeedingRateStandards();
+    
+    console.log('Passed:',result.passed);
+    
+    const options = {
+        148: { // pea
+            // here we give a very 250% managementImpactOnMix, resulting in a finalMixSeedingRate which will be too high.
+            // this is meant to immitate the user setting their own managementImpactOnMix rather than using our default.
+            managementImpactOnMix: 2.5 
+        },
+        23: { // oat
+            // here we set our percentOfRate to 1% which results in a finalMixSeedingRate which will be too low.
+            // this is meant to immitate the user using a custom value in place of our default percentOfRate.
+            percentOfRate: 0.01 
+        },
+        161: { // rapeseed
+            // use rapeseeds default settings. which will cause it to pass.
+        },
+    }
+    
+    console.log('Mimicing user provided bad values:')
+    const failedResult = calculator.nrcs.mixPassesSeedingRateStandards(options);
+    console.log('Passed:',failedResult.passed);
+    
+
+    printNrcsFailureErrors(failedResult.errors);
+}
+
+/**
+ * mimics data found at Airtable as of 6/9/2023
+ * https://airtable.com/appwVLKETedegCglQ/tblbF2v9Pc94kE7e3/viwKAiORg1e0SkzkQ?blocks=hide
+ */
+async function nrcsCheckPlantingDate(calculator){
+
+    console.log('\n\n-------------------------------------')
+    console.log('Running NRCS Planting Date Check')
+    console.log('-------------------------------------')
+
+    console.log('Using default values:')
+    const result = calculator.nrcs.mixPassesPlantingDateStandards({plantingDate: '3/31'});
+    
+    console.log('Passed:',result.passed);
+    
+    console.log('Mimicing user provided bad values:')
+    const failedResult = calculator.nrcs.mixPassesPlantingDateStandards({plantingDate: '3/30'});
+    console.log('Passed:',failedResult.passed);
+
+    printNrcsFailureErrors(failedResult.errors);
+}
+
+/**
+ * mimics data found at Airtable as of 6/9/2023
+ * https://airtable.com/appwVLKETedegCglQ/tblbF2v9Pc94kE7e3/viwKAiORg1e0SkzkQ?blocks=hide
+ */
+async function nrcsCheckPercentInMix(calculator){
+
+    console.log('\n\n-------------------------------------')
+    console.log('Running NRCS Percent In Mix Check')
+    console.log('-------------------------------------')
+
+    console.log('Using default values:')
+    const result = calculator.nrcs.mixPassesRatioStandards();
+    console.log('Passed:',result.passed);
+    
+    console.log('Mimicing user provided bad values:')
+
+    const options = {
+        148: { // pea
+            // because pea's is default % in mix limit is 100%, we are going to provide a custom % in mix limit
+            // to force it to fail. Based on the value we provided for rapeseed,
+            // the estimated % of peas in the mix is rought 1.5% of the mix.
+            // so we are going to set the maxInMix to 1% for oats, which will cause this to fail as well.
+            maxInMix: 0.01
+        },
+        23: { // oat
+        },
+        161: { // rapeseed
+            // Rapeseed is the only 1 of these three that has a limit less that 100%
+            // here we are saying that we want to use 500% of the baseSeedingRate.
+            // This will effectively cause the % of rapeseed in the mix to be higher than 60% ( which is rapeseeds default % in mix limit.)
+            percentOfRate: 5 
+        },
+    }
+
+    const failedResult = calculator.nrcs.mixPassesRatioStandards(options);
+    console.log('Passed:',failedResult.passed);
+
+    printNrcsFailureErrors(failedResult.errors);
+}
+
+
+/**
+ * mimics data found at Airtable as of 6/9/2023
+ * https://airtable.com/appwVLKETedegCglQ/tblbF2v9Pc94kE7e3/viwKAiORg1e0SkzkQ?blocks=hide
+ */
+async function nrcsCheckPlantingDate(calculator){
+
+    console.log('\n\n-------------------------------------')
+    console.log('Running NRCS Planting Date Check')
+    console.log('-------------------------------------')
+
+    console.log('Using default values:')
+    const result = calculator.nrcs.mixPassesPlantingDateStandards({plantingDate:'3/31'});
+    console.log('Passed:',result.passed);
+    
+    console.log('Mimicing user provided bad values:')
+
+    const failedResult = calculator.nrcs.mixPassesPlantingDateStandards({plantingDate:'3/29'});
+    console.log('Passed:',failedResult.passed);
+
+    printNrcsFailureErrors(failedResult.errors);
+}
+
+/**
+ * mimics data found at Airtable as of 6/9/2023
+ * https://airtable.com/appwVLKETedegCglQ/tblbF2v9Pc94kE7e3/viwKAiORg1e0SkzkQ?blocks=hide
+ */
+async function nrcsCheckSoilDrainage(calculator){
+
+    console.log('\n\n-------------------------------------')
+    console.log('Running NRCS Soil Drainage Check')
+    console.log('-------------------------------------')
+
+    console.log('Using default values:')
+    const result = calculator.nrcs.mixPassesSoilDrainageStandards({soilDrainage:['Well Drained']});
+    console.log('Passed:',result.passed);
+    
+    console.log('Mimicing user provided bad values:')
+
+    const failedResult = calculator.nrcs.mixPassesSoilDrainageStandards({soilDrainage:['Well Drained','Excessively Drained']});
+    console.log('Passed:',failedResult.passed);
+
+    printNrcsFailureErrors(failedResult.errors);
+}
+
+/**
+ * mimics data found at Airtable as of 6/9/2023
+ * https://airtable.com/appwVLKETedegCglQ/tblbF2v9Pc94kE7e3/viwKAiORg1e0SkzkQ?blocks=hide
+ */
+async function nrcsCheckWinterSurvival(calculator){
+
+    console.log('\n\n-------------------------------------')
+    console.log('Running NRCS Winter Survival Check')
+    console.log('-------------------------------------')
+
+    console.log('Using default values:')
+    const result = calculator.nrcs.mixPassesWinterSurvivalStandards();
+    console.log('Passed:',result.passed);
+    
+    /**
+     * Here we pass in a custom threshold of 60%
+     * The default threshold is 50%
+     * 
+     * We use 60% here because based on the values present at the time of 6/12/23
+     * we know that this mix's default values have a winter survivability of 55%.
+     */
+    console.log('Failed (custom threshold):')
+    const failedToMeetThresholdResult = calculator.nrcs.mixPassesWinterSurvivalStandards({threshold:0.6});
+    console.log('Passed:',failedToMeetThresholdResult.passed);
+    printNrcsFailureErrors(failedToMeetThresholdResult.errors);
+    
+    
+    /**
+     * Here we pass in custom % winter survivability per crop.
+     * 
+     * for demo-ing purposes only use one of the two failure options at a time.
+    */
+    console.log('Failed (custom crop values):')
+    const options = {
+        148: { // pea
+        },
+        23: { // oat
+            // here we set the seedPerAcre to a super high number, causing this mix to be mostly oats.
+            // oats by default has a 40% change of winter survival
+            // this means if the mix is mostly oats, the mix will have a winter survival close t 40%.
+            // which does not meet the default threshold of 50%.
+            seedsPerAcre: 99999999
+        },
+        161: { // rapeseed
+            // another way to cause failure is by changing the chanceWinterSurvival
+            // in this mix, rapeseeds default chance is 21% (0.21)
+            // so by changing this to 10% (0.1) we ensure that the mix will not meet the 50% threshold.
+            // chanceWinterSurvival: 0.1
+        },
+    }
+
+    const failedResult = calculator.nrcs.mixPassesWinterSurvivalStandards(options);
+    console.log('Passed:',failedResult.passed);
+
+    printNrcsFailureErrors(failedResult.errors);
 }

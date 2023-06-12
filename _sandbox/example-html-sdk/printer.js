@@ -83,3 +83,11 @@ function printMixRatiosPageCustom(calculator, userInput){
     console.log('--------------------------------------------\n\n')
 }
 
+function printNrcsFailureErrors(errors){
+    console.log('Errors:')
+    for(let error of errors){
+        console.log('\t>',error.crop);
+        console.log('\t\t-',error.error);
+    }
+
+}

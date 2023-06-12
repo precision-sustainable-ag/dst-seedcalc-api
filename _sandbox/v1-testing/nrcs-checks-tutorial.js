@@ -53,7 +53,6 @@ async function getMix(){
 
 function mixSeedingRateBeforeAfter({mix, council, crop, calculator}){
 
-
     console.log('before:',crop.mixSeedingRate);
     
     calculator.mixSeedingRate(mix[0]);
@@ -62,11 +61,18 @@ function mixSeedingRateBeforeAfter({mix, council, crop, calculator}){
 }
 
 function percentInMix({calculator,crop}){
-    console.log(crop.label,'- 1:',calculator.percentInMix(crop, {
+
+    console.log('Getting default % in mix:',crop.label);
+    const percentInMix = calculator.percentInMix(crop);
+    console.log('>>>',percentInMix);
+    
+    console.log('Getting custom % in mix:',crop.label);
+    const customPercentInMix = calculator.percentInMix(crop, {
         148: { seedsPerPound: 3500, mixSeedingRate: 14.83 }, // crop specific options, where property key is crop.id
         23: { seedsPerPound: 13000, mixSeedingRate: 15.97 }, // crop specific options, where property key is crop.id
         161: { seedsPerPound: 157000, mixSeedingRate: 0.88}, // crop specific options, where property key is crop.id
-    }));
+    });
+    console.log('>>>',customPercentInMix);
 }
 
 
@@ -117,8 +123,6 @@ function nrcsValidPlantingDate({calculator, crop}){
 }
 
 
-
-
 function initCrop(struct){
     const crop = Crop.factory('mccc',struct);
     console.log('Created crop',crop);
@@ -126,6 +130,7 @@ function initCrop(struct){
 
     return crop;
 }
+
 
 async function main(){
     const council = await getCouncil();
@@ -170,13 +175,23 @@ async function main(){
 
     percentInMix({council,mix,calculator,crop});
     
-    nrcsValidPercentInMix({calculator, crop});
+    // nrcsValidPercentInMix({calculator, crop});
 
-    nrcsValidPlantingDate({calculator,crop:mix[2]});
+    // nrcsValidPlantingDate({calculator,crop:mix[2]});
 
-    nrcsValidSeedingRate({calculator,crop:mix[2]});
+    // nrcsValidSeedingRate({calculator,crop:mix[2]});
 
-    nrcsValidSoilDrainage({calculator,crop:mix[2]});
+    // nrcsValidSoilDrainage({calculator,crop:mix[2]});
+
+    const options = {
+        // threshold: 0.2,
+        // 148: { seedsPerPound: 3500, mixSeedingRate: 14.83 }, // crop specific options, where property key is crop.id
+        // 23: { seedsPerPound: 13000, mixSeedingRate: 15.97 }, // crop specific options, where property key is crop.id
+        // 161: { seedsPerPound: 157000, mixSeedingRate: 0.88}, // crop specific options, where property key is crop.id
+    }
+    
+    const passes = calculator.nrcs.mixPassesWinterSurvivalStandards(options);
+    console.log('Passed:',passes);
 
 }
 

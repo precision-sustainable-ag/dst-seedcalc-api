@@ -48,6 +48,7 @@ class NRCS {
 
     constructor({calculator}){
         this.calculator = calculator;
+        this.reasons = [];
     }
 
     /**
@@ -57,8 +58,8 @@ class NRCS {
      * 
      * @param {object} crop 
      * @param {object} options - the options for this calculation, as well as the options for calculations for specific crops in the mix.
-     * @param {number} options.percentInMix - the percent of this crop in the current mix. 
-     * @param {number} options.maxInMix - maximum percent in mix limit. 
+     * @param {number} [options.percentInMix] - the percent of this crop in the current mix. 
+     * @param {number} [options.maxInMix] - maximum percent in mix limit. 
      * 
      * @returns {boolean} 
      */
@@ -70,18 +71,23 @@ class NRCS {
         const percentInMix = config?.percentInMix ?? this.calculator.percentInMix(crop, options);
 
         const maxInMix = config?.maxInMix ?? crop?.coefficents?.maxInMix;
+        
+        console.log(percentInMix, '<=', maxInMix, ':', percentInMix <= maxInMix);
 
-        return percentInMix <= maxInMix;
+        return {
+            passed: percentInMix <= maxInMix,
+            error: 'Exceeds maximum percentage of mix.'
+        };
     }
 
     /**
      * 
      * @param {object|Crop} crop 
      * @param {object} options 
-     * @param {array} options.plantingDate - defaults to now.
-     * @param {array} options.reliableEstablishement
-     * @param {array} options.earlySeeding
-     * @param {array} options.lateSeeding
+     * @param {string|Date} [options.plantingDate] - defaults to now.
+     * @param {Array.<{ start: Date, end: Date}>} [options.reliableEstablishement]
+     * @param {Array.<{ start: Date, end: Date}>} [options.earlySeeding]
+     * @param {Array.<{ start: Date, end: Date}>} [options.lateSeeding]
      */
     isValidPlantingDate(crop, options = { plantingDate: new Date(), }){
         crop = this.calculator.getCrop(crop);
@@ -100,11 +106,18 @@ class NRCS {
             ...config?.lateSeeding ?? crop.plantingDates?.lateSeeding ?? [],
         ];
 
+        let passed = false;
+        let error = 'Planting date is not recommended.';
+
         for(let range of validDates){
-            if(config.plantingDate >= range.start && config.plantingDate <= range.end) return true;
+            if(config.plantingDate >= range.start && config.plantingDate <= range.end) {
+                passed = true;
+                error = null;
+                break;
+            }
         }
 
-        return false;
+        return {passed, error};
     }
     /**
      * isValidSeedingRate - 
@@ -115,7 +128,7 @@ class NRCS {
      *  
      * @param {object} crop - crop object 
      * @param {object} options - options object, mimics options object for mix seeding rate. ALL options provided will be used to calculate Final Mix Seeding Rate, only singleSpeciesSeedingRate & percentOfRate will be considered when calculating the Base Mix Seeding Rate.
-     * @param {number} [options.singleSpeciesSeedingRate] - The single species seeding rate value for the crop. If not provided, it is set to the crop's single species seeding rate coefficient.
+     * @param {number} [options.singleSpeciesSeedingRate] - The single species seeding rate value for the crop. If not provided, it is set to the crop's default single species seeding rate coefficient.
      * @param {number} [options.percentOfRate] - The percent of rate value for the mix seeding rate. If not provided, it is set to the default percent of single species seeding rate.
      * @param {number|Object} [options.plantingMethodModifier] - The planting method modifier value or object. If it is an object, it should have the plantingMethod property to determine the planting method modifier value.
      * @param {number} [options.managementImpactOnMix] - The management impact on mix value.
@@ -126,7 +139,6 @@ class NRCS {
 
         const baseSeedingRate = this.calculator.mixSeedingRate(crop, {
             singleSpeciesSeedingRate: options?.singleSpeciesSeedingRate,
-            percentOfRate: options?.percentOfRate,
         });
 
         const finalMixSeedingRate = this.calculator.mixSeedingRate(crop, options);
@@ -136,7 +148,17 @@ class NRCS {
         // 50% of base seeding rate.
         const LOWER_LIMIT = baseSeedingRate * 0.5; 
 
-        return finalMixSeedingRate <= UPPER_LIMIT && finalMixSeedingRate >= LOWER_LIMIT;
+        if(finalMixSeedingRate > UPPER_LIMIT) return {
+            passed: false, 
+            error: `Failed because final mix seeding rate is greater than the upper limit of ${UPPER_LIMIT}`
+        };
+
+        if(finalMixSeedingRate < LOWER_LIMIT) return {
+            passed: false,
+            error: `Failed because final mix seeding rate is less than the lower limit of ${LOWER_LIMIT}`
+        };
+
+        return { passed: true };
     }
 
     /**
@@ -146,7 +168,7 @@ class NRCS {
      * 
      * @param {object|Crop} crop - the crop object.
      * @param {object} options - the options object.
-     * @param {string|array} options.soilDrainage - Either a single soil drainage value OR an array of soil drainage values.
+     * @param {string|array.<String>} options.soilDrainage - Either a single soil drainage value OR an array of soil drainage values.
      * 
      * @returns {boolean} True only if crop.soilDrainage contains ALL of the soil drainage values provided.
      * 
@@ -162,11 +184,225 @@ class NRCS {
 
         crop = this.calculator.getCrop(crop);
 
+        let passed = true;
+        const invalidSoilDrainageClasses = [];
+
         for(let drainageClass of options.soilDrainage){
-            if(!crop.soilDrainage.includes(drainageClass)) return false;
+            if(!crop.soilDrainage.includes(drainageClass)) {
+                passed = false;
+                invalidSoilDrainageClasses.push(drainageClass);
+            };
         }
 
-        return true;
+        return {
+            passed,
+            error: `Invalid Soil Drainage Conditions: ${invalidSoilDrainageClasses.join(', ')}` 
+        };
+    }
+
+
+    runMixCheck(handler, optionsResolver, options){
+        const crops = this.calculator.crops;
+        let mixPassed = true;
+        const errors = [];
+
+        for(let [id, crop] of Object.entries(crops)){
+            const cropOptions = optionsResolver(id, crop, options);
+            const {passed, error} = this[handler](crop, cropOptions);
+            if(!passed) {
+                errors.push({
+                    crop: crop.label,
+                    error: error
+                });
+                mixPassed = false;
+            }
+        }
+
+        return {
+            passed: mixPassed,
+            errors: errors
+        };
+    }
+
+    /**
+     * mixPassesSeedingRateStandards - 
+     * 
+     *  Checks to see if all crops in the mix pass the isValidSeedingRate function.
+     *  If any of the crop fail that test, then the entire mix is considered to have faled the standards check.
+     *  When the mix passes the standards check this function will return true, otherwise it will return false.
+     * 
+     * @param {object} options - options object to pass in parameters for calculations performed in this function. The options object here should contain sub-object options for each crop, where the crop.id is the key for options object.
+     *  - **[crop_id]** - the crop id for a given crop should be the key value used to assign options for a given crop. mimics options object for mix seeding rate. ALL options provided will be used to calculate Final Mix Seeding Rate, only singleSpeciesSeedingRate & percentOfRate will be considered when calculating the Base Mix Seeding Rate.
+     *  - - **singleSpeciesSeedingRate** -  The single species seeding rate value for the crop. If not provided, it is set to the crop's default single species seeding rate coefficient.
+     *  - - **percentOfRate** - The percent of rate value for the mix seeding rate. If not provided, it is set to the default percent of single species seeding rate.
+     *  - - **plantingMethodModifier** - The planting method modifier value or object. If it is an object, it should have the plantingMethod property to determine the planting method modifier value.
+     *  - - **managementImpactOnMix**  - The management impact on mix value.
+     *  - - **germination**  - The germination value.
+     *  - - **purity**  - The purity value.
+     * 
+     * @param {object} [options.crop_id]
+     * @param {number} [options.crop_id.singleSpeciesSeedingRate]
+     * @param {number} [options.crop_id.percentOfRate]
+     * @param {number} [options.crop_id.plantingMethodModifier] 
+     * @param {number} [options.crop_id.managementImpactOnMix]
+     * @param {number} [options.crop_id.germination] 
+     * @param {number} [options.crop_id.purity] 
+     * 
+     * @returns {boolean} When the mix passes the standards check this function will return true, otherwise it will return false.
+     */
+    mixPassesSeedingRateStandards(options = {}){
+
+        const optionsResolver = (id, crop, options) => options[id] ?? {};
+        return this.runMixCheck('isValidSeedingRate', optionsResolver, options);
+
+    }
+
+    /**
+     * mixPassesRatioStandards - 
+     * 
+     *  Checks to see if all crops in the mix passes the isValidPercentInMix function.
+     *  If any of the crop fail that test, then the entire mix is considered to have faled the standards check.
+     *  When the mix passes the standards check this function will return true, otherwise it will return false.
+     * 
+     * @param {object} options - options object to pass in parameters for calculations performed in this function. The options object here should contain sub-object options for each crop, where the crop.id is the key for options object.
+     *  - **[crop_id]** - the crop id for a given crop should be the key value used to assign options for a given crop.
+     *  - - **percentInMix** -  the percent of this crop in the current mix.
+     *  - - **maxInMix** - maximum percent in mix limit. 
+     * 
+     * @param {object} [options.crop_id]
+     * @param {number} [options.crop_id.percentInMix] 
+     * @param {number} [options.crop_id.maxInMix]
+     * 
+     * @returns {boolean} When the mix passes the standards check this function will return true, otherwise it will return false.
+     */
+    mixPassesRatioStandards(options = {}){
+        // const crops = this.calculator.crops;
+
+        // for(let [id, crop] of Object.entries(crops)){
+        //     const cropOptions = options[id] ?? {};
+        //     if(!this.isValidPercentInMix(crop, cropOptions)) return false;
+        // }
+
+        // return true;
+
+
+        const optionsResolver = (id, crop, options) => {return {...options, ...options[id]} ?? options};
+        return this.runMixCheck('isValidPercentInMix', optionsResolver, options);
+    }
+    
+    /**
+     * mixPassesPlantingDateStandards - 
+     * 
+     *  Checks to see if all crops in the mix passes the isValidPlantingDate function.
+     *  If any of the crop fail that test, then the entire mix is considered to have faled the standards check.
+     *  When the mix passes the standards check this function will return true, otherwise it will return false.
+     * 
+     * @param {object} options - options object to pass in parameters for calculations performed in this function. The options object here should contain sub-object options for each crop, where the crop.id is the key for options object.
+     *  - **[crop_id]** - the crop id for a given crop should be the key value used to assign options for a given crop.
+     *  - - **plantingDate** - defaults to now.
+     *  - - **reliableEstablishement** - array of reliable establishment date range objects. 
+     *  - - **earlySeeding** - array of early seeding date range objects. 
+     *  - - **lateSeeding** - array of late seeding date range objects. 
+     * 
+     * @param {object} [options.crop_id]
+     * @param {string|Date} [options.crop_id.plantingDate] 
+     * @param {Array.<{ start: Date, end: Date}>} [options.crop_id.reliableEstablishement]
+     * @param {Array.<{ start: Date, end: Date}>} [options.crop_id.earlySeeding]
+     * @param {Array.<{ start: Date, end: Date}>} [options.crop_id.lateSeeding]
+     * 
+     * @returns {boolean} When the mix passes the standards check this function will return true, otherwise it will return false.
+     */
+    mixPassesPlantingDateStandards(options = {}){
+        // const crops = this.calculator.crops;
+
+        // for(let [id, crop] of Object.entries(crops)){
+        //     const cropOptions = options[id] ?? {};
+        //     if(!this.isValidPlantingDate(crop, cropOptions)) return false;
+        // }
+
+        // return true;
+
+        const plantingDate = options?.plantingDate;
+        const optionsResolver = (id, crop, options) => options[id] ?? {plantingDate};
+        return this.runMixCheck('isValidPlantingDate', optionsResolver, options);
+    }
+    
+    /**
+     * mixPassesPlantingDateStandards - 
+     * 
+     *  Checks to see if all crops in the mix passes the isValidPlantingDate function.
+     *  If any of the crop fail that test, then the entire mix is considered to have faled the standards check.
+     *  When the mix passes the standards check this function will return true, otherwise it will return false.
+     * 
+     * @param {object} options - options object to pass in parameters for calculations performed in this function. The options object here should contain sub-object options for each crop, where the crop.id is the key for options object.
+     *  - **soilDrainage** - the soil drainage values the user provided. This will be used for each crop in the mix, if soilDrainage is not given for the specific crop_id in the options object.
+     *  - **[crop_id]** - the crop id for a given crop should be the key value used to assign options for a given crop.
+     *  - - **soilDrainage** - the soil drainage values the user provided for this specific crop.
+     * 
+     * @param {string|array.<String>} [options.soilDrainage]
+     * @param {object} [options.crop_id]
+     * @param {string|array.<String>} [options.crop_id.soilDrainage] 
+     * 
+     * @returns {boolean} When the mix passes the standards check this function will return true, otherwise it will return false.
+     * 
+     * @throws {Error} When options.crop_id.soilDrainage or options.soilDrainage is not provided.
+     */
+    mixPassesSoilDrainageStandards(options = {}){
+        // const crops = this.calculator.crops;
+
+        const soilDrainage = options?.soilDrainage ?? [];
+
+        // for(let [id, crop] of Object.entries(crops)){
+        //     const cropOptions = options[id] ?? {soilDrainage};
+        //     if(!this.isValidSoilDrainage(crop, cropOptions)) return false;
+        // }
+
+        // return true;
+
+        const optionsResolver = (id, crop, options) => options[id] ?? {soilDrainage};
+        return this.runMixCheck('isValidSoilDrainage', optionsResolver, options);
+    }
+
+    /**
+     * mixPassesPlantingDateStandards - 
+     * 
+     *  Checks to see if all crops in the mix passes the isValidPlantingDate function.
+     *  If any of the crop fail that test, then the entire mix is considered to have faled the standards check.
+     *  When the mix passes the standards check this function will return true, otherwise it will return false.
+     * 
+     * @param {object} options - options object to pass in parameters for calculations performed in this function. The options object here should contain sub-object options for each crop, where the crop.id is the key for options object.
+     *  - **soilDrainage** - the soil drainage values the user provided. This will be used for each crop in the mix, if soilDrainage is not given for the specific crop_id in the options object.
+     *  - **[crop_id]** - the crop id for a given crop should be the key value used to assign options for a given crop.
+     *  - - **soilDrainage** - the soil drainage values the user provided for this specific crop.
+     * 
+     * @param {string|array.<String>} [options.soilDrainage]
+     * @param {object} [options.crop_id]
+     * @param {string|array.<String>} [options.crop_id.soilDrainage] 
+     * 
+     * @returns {boolean} When the mix passes the standards check this function will return true, otherwise it will return false.
+     * 
+     * @throws {Error} When options.crop_id.soilDrainage or options.soilDrainage is not provided.
+     */
+    mixPassesWinterSurvivalStandards(options = { }){
+        const crops = this.calculator.crops;
+        const threshold = options?.threshold ?? 0.5;
+        let chanceOfMixSurvival = 0.00;
+
+        for(let [id, crop] of Object.entries(crops)){
+
+            const cropOptions =  {...options,...options[id]} ?? options;
+            const percentInMix = this.calculator.percentInMix(crop, cropOptions);
+            const winterSurvivability = cropOptions.chanceWinterSurvival ?? crop.coefficents.chanceWinterSurvival;
+            const chanceOfCropSurvivalInMix = winterSurvivability * percentInMix;
+            chanceOfMixSurvival += chanceOfCropSurvivalInMix;
+
+        }
+
+        const passed = chanceOfMixSurvival >= threshold;
+        const errors = passed === true ? [] : [{crop: 'Mix', error: `The chance of winter survival is less than the minimum threshold of ${(threshold * 100).toFixed(0)}%.`}];
+
+        return { passed, errors };
+
     }
 
 }
@@ -312,26 +548,24 @@ class SeedRateCalculator {
      * @param {number} options [{cropId}].seedsPerAcre - overrides and sets the seedsPerAcre for the given cropId in this mix. 
      * 
      * @returns {number} The percent of seed for the given crop in the current mix.
+     * 
      */
     percentInMix(crop, options={}){
-
-        crop = this.getCrop(crop);
+ 
+        const ORIGINAL_CROP = this.getCrop(crop);
 
         let sumSeedsPerAcre = 0;
-        for(let [id, cropInMix] of Object.entries(this.crops)){
-            const cropInMixOptions = options[id] ?? {};
-            // get mix seeding rate
-            if(cropInMixOptions?.mixSeedingRate) cropInMix.mixSeedingRate = cropInMixOptions.mixSeedingRate;
-            if(!cropInMix?.mixSeedingRate) cropInMixOptions.mixSeedingRate = this.mixSeedingRate(cropInMix, cropInMixOptions);
-            
-            // get seeds per acre
-            if(cropInMixOptions?.seedsPerAcre) cropInMix.seedsPerAcre = cropInMixOptions.seedsPerAcre;
-            if(!cropInMix?.seedsPerAcre) cropInMixOptions.seedsPerAcre = this.seedsPerAcre(cropInMix, cropInMixOptions);
+        for(let [id, crop] of Object.entries(this.crops)){
+            const cropOptions = options[id] ?? {};
 
-            sumSeedsPerAcre += cropInMix.seedsPerAcre;
+            cropOptions.mixSeedingRate = this.mixSeedingRate(crop, cropOptions);
+
+            const seedsPerAcre = this.seedsPerAcre(crop, cropOptions);
+
+            sumSeedsPerAcre += seedsPerAcre;
         }
 
-        return crop.percentInMix = (crop.seedsPerAcre / sumSeedsPerAcre);
+        return ORIGINAL_CROP.percentInMix = (ORIGINAL_CROP.seedsPerAcre / sumSeedsPerAcre);
     }
 
     /**
@@ -345,6 +579,7 @@ class SeedRateCalculator {
      * @returns {number} The planting method modifier for the given crop and planting method.
      */
     plantingMethodModifier(crop, options={}){
+        if(options?.plantingMethodModifier) return crop.plantingMethodModifier = options.plantingMethodModifier;
 
         crop = this.getCrop(crop);
 
@@ -496,6 +731,8 @@ class SeedRateCalculator {
      * @returns {number} The seeds per acre for the given crop
      */
     seedsPerAcre(crop, options={}) {
+        if(options?.seedsPerAcre) return crop.seedsPerAcre = options.seedsPerAcre;
+
         crop = this.getCrop(crop);
         options = new Options(this, this.props('seedsPerAcre'), {crop, options})
 
@@ -530,7 +767,7 @@ class SeedRateCalculator {
      * @returns {number} The mix seeding rate value.
      */
     mixSeedingRate(crop, options = {}){
-        if(options?.mixSeedingRate) return options.mixSeedingRate;
+        if(options?.mixSeedingRate) return crop.mixSeedingRate = options.mixSeedingRate;
 
         crop = this.getCrop(crop);
 
@@ -561,20 +798,14 @@ class SeedRateCalculator {
         }
 
         if(managementImpactOnMix){
-            if(managementImpactOnMix <= 0) throw new Error('Management Impact on mix must be greater than 0');
-            if(managementImpactOnMix > 1) throw new Error('Management Impact on mix must be less than or equal to 1');
             mixSeedingRate = mixSeedingRate + ( mixSeedingRate * managementImpactOnMix);
         }
 
         if(germination){
-            if(germination <= 0) throw new Error('Germination must be greater than 0');
-            if(germination > 1) throw new Error('Germination must be less than or equal to 1');
             mixSeedingRate = mixSeedingRate / germination;
         }
 
         if(purity){
-            if(purity <= 0) throw new Error('Purity must be greater than 0');
-            if(purity > 1) throw new Error('Purity must be less than or equal to 1');
             mixSeedingRate = mixSeedingRate / purity;
         }
 
@@ -644,5 +875,5 @@ class MWSeedRateCalculator extends SeedRateCalculator {
 
 
 module.exports = {
-    Options, SeedRateCalculator, MWSeedRateCalculator
+    Options, SeedRateCalculator, MWSeedRateCalculator, NRCS
 }
