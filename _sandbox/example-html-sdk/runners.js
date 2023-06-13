@@ -230,7 +230,7 @@ async function nrcsCheckPercentInMix(calculator){
             // to force it to fail. Based on the value we provided for rapeseed,
             // the estimated % of peas in the mix is rought 1.5% of the mix.
             // so we are going to set the maxInMix to 1% for oats, which will cause this to fail as well.
-            maxInMix: 0.01
+            // maxInMix: 0.01
         },
         23: { // oat
         },
