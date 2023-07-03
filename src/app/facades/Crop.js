@@ -3,12 +3,24 @@ class Crop {
 
     static FACTORY_MAP = {
         'mccc': (data) => new MWCrop(data),
+        'neccc': (data) => new NECrop(data),
     }
 
 
     constructor(council, data){
         if(council){
             return Crop.factory(council, data);
+        }
+        this.raw = data;
+    }
+
+    static getFactory(K){
+        let factory = this.FACTORY_MAP[K];
+
+        if(factory) return factory;
+
+        return () => {
+            return new Crop();
         }
     }
 
@@ -27,6 +39,7 @@ class Crop {
         instance.raw = data;
         instance.id = data.id;
         instance.label = data.label;
+        instance.group = data?.group?.label;
         instance.calcs = {};
 
         return instance.init();
@@ -55,12 +68,12 @@ class Crop {
             if(!(typeof next === 'object')) break;
 
             if(Object.keys(next).includes(key)) next = next[key];
-            else if(prop.required) throw new Error(`Invalid Crop Structure - Missing Attributes: ${fullPath ?? path}`);
+            else if(prop.required) throw new Error(`(${this.label}) Invalid Crop Structure - Missing Attributes: ${fullPath ?? path}`);
         }
 
         for(let check of checks){
             if(typeof check.validate === 'function'){
-                if(!check.validate(next)) throw new Error(`Failed Check: ${fullPath ?? path} - ${check.summary}`)
+                if(!check.validate(next)) throw new Error(`(${this.label}) Failed Check: ${fullPath ?? path} - ${check.summary}`)
             }
         }
 
@@ -86,7 +99,7 @@ class Crop {
             }
             
             if(props.required && !(container?.values || container.values.length < 1)) {
-                throw new Error(`Invalid Crop Structure - Missing Values: ${fullPath ?? path}`)
+                throw new Error(`(${this.label}) Invalid Crop Structure - Missing Values: ${fullPath ?? path}`)
             }
             
             if(props?.setter && container?.values?.length >= 1 && typeof props.setter === 'function'){
@@ -141,37 +154,37 @@ class MWCrop extends Crop {
                         {
                             key: 'Single Species Seeding Rate', 
                             required: true, 
-                            setter: (inst, val) => inst.coefficents.singleSpeciesSeedingRate = Number(val.values[0])
+                            setter: (inst, val) => inst.coefficients.singleSpeciesSeedingRate = Number(val.values[0])
                         },
                         {
                             key: 'Broadcast Coefficient', 
                             required: true,
-                            setter: (inst, val) => inst.coefficents.plantingMethods.broadcast = Number(val.values[0])
+                            setter: (inst, val) => inst.coefficients.plantingMethods.broadcast = Number(val.values[0])
                         },
                         {
                             key: 'Aerial Coefficient', 
                             required: true,
-                            setter: (inst, val) => inst.coefficents.plantingMethods.aerial = Number(val.values[0])
+                            setter: (inst, val) => inst.coefficients.plantingMethods.aerial = Number(val.values[0])
                         },
                         {
                             key: 'Precision Coefficient', 
                             required: true,
-                            setter: (inst, val) => inst.coefficents.plantingMethods.precision = Number(val.values[0])
+                            setter: (inst, val) => inst.coefficients.plantingMethods.precision = Number(val.values[0])
                         },
                         {
                             key: '% Live Seed to Emergence', 
                             required: true,
-                            setter: (inst, val) => inst.coefficents.liveSeedToEmergence = Number(val.values[0])
+                            setter: (inst, val) => inst.coefficients.liveSeedToEmergence = Number(val.values[0])
                         },
                         {
                             key: 'Max % Allowed in Mix',
                             required: true,
-                            setter: (inst, val) => inst.coefficents.maxInMix = Number(val.values[0])
+                            setter: (inst, val) => inst.coefficients.maxInMix = Number(val.values[0])
                         },
                         {
                             key: '% Chance of Winter Survial', 
                             required: true,
-                            setter: (inst, val) => inst.coefficents.chanceWinterSurvival = Number(val.values[0])
+                            setter: (inst, val) => inst.coefficients.chanceWinterSurvival = Number(val.values[0])
                         },
                     ]
                 },
@@ -292,10 +305,10 @@ class MWCrop extends Crop {
     init(){
         super.init();
 
-        this.coefficents = { plantingMethods: {} };
+        this.coefficients = { plantingMethods: {} };
         this.plantingDates = { }
         this.nrcs = { }
-        this.custom = this.raw.custom ?? {};
+        this.custom = this?.raw?.custom ?? {};
 
         // validates and sets props.
         this.validateProps(MWCrop.props);
@@ -321,55 +334,60 @@ class NECrop extends Crop {
                     required: true,
                     props: [
                         {
-                            key: 'Single Species Seeding Rate', 
-                            required: true, 
-                            setter: (inst, val) => inst.coefficents.singleSpeciesSeedingRate = Number(val.values[0])
+                            key: 'High Fertility Competition Coefficient', 
+                            required: false, 
+                            setter: (inst, val) => inst.coefficients.highFertilityCompetition = Number(val.values[0])
                         },
                         {
-                            key: 'Broadcast Coefficient', 
-                            required: true,
-                            setter: (inst, val) => inst.coefficents.plantingMethods.broadcast = Number(val.values[0])
+                            key: 'Low Fertility Competition Coefficient', 
+                            required: false, 
+                            setter: (inst, val) => inst.coefficients.lowFertilityCompetition = Number(val.values[0])
+                        },
+                        {
+                            key: 'High Fertility Monoculture Coefficient', 
+                            required: false, 
+                            setter: (inst, val) => inst.coefficients.highFertilityMonoculture = Number(val.values[0])
+                        },
+                        {
+                            key: 'Low Fertility Monoculture Coefficient', 
+                            required: false, 
+                            setter: (inst, val) => inst.coefficients.lowFertilityMonoculture = Number(val.values[0])
+                        },
+                        {
+                            key: 'Single Species Seeding Rate', 
+                            required: true, 
+                            setter: (inst, val) => inst.coefficients.singleSpeciesSeedingRate = Number(val.values[0])
+                        },
+                        {
+                            key: 'Broadcast with Cultivation Coefficient', 
+                            required: false,
+                            setter: (inst, val) => inst.coefficients.plantingMethods.broadcast = Number(val.values[0])
+                        },
+                        {
+                            key: 'Broadcast without Cultivation Coefficient', 
+                            required: false,
+                            setter: (inst, val) => inst.coefficients.plantingMethods.broadcast = Number(val.values[0])
                         },
                         {
                             key: 'Aerial Coefficient', 
-                            required: true,
-                            setter: (inst, val) => inst.coefficents.plantingMethods.aerial = Number(val.values[0])
-                        },
-                        {
-                            key: 'Precision Coefficient', 
-                            required: true,
-                            setter: (inst, val) => inst.coefficents.plantingMethods.precision = Number(val.values[0])
-                        },
-                        {
-                            key: '% Live Seed to Emergence', 
-                            required: true,
-                            setter: (inst, val) => inst.coefficents.liveSeedToEmergence = Number(val.values[0])
-                        },
-                        {
-                            key: 'Max % Allowed in Mix',
-                            required: true,
-                            setter: (inst, val) => inst.coefficents.maxInMix = Number(val.values[0])
-                        },
-                        {
-                            key: '% Chance of Winter Survial', 
-                            required: true,
-                            setter: (inst, val) => inst.coefficents.chanceWinterSurvival = Number(val.values[0])
+                            required: false,
+                            setter: (inst, val) => inst.coefficients.plantingMethods.aerial = Number(val.values[0])
                         },
                     ]
                 },
                 {
-                    key: 'Planting Information', 
+                    key: 'Planting', 
                     required: true,
                     props: [
                         {
-                            key: 'Seed Count', 
+                            key: 'Seeds Per lb', 
                             required: true,
                             setter: (inst, val) => inst.seedsPerPound = Number(val.values[0])
                         },
                         {   
                             key: 'Planting Methods', 
-                            required: true, 
-                            checks: [{validate: (val) => { return Array.isArray(val.values); }, summary: 'Must be an array.'}],
+                            required: false, 
+                            // checks: [{validate: (val) => { return Array.isArray(val.values); }, summary: 'Must be an array.'}],
                             setter: (inst, val) => inst.plantingMethods = val.values
                         },
                     ]
@@ -381,18 +399,14 @@ class NECrop extends Crop {
                         {
                             key: 'Soil Drainage', 
                             required: true,
+                            checks: [{validate: (val) => { return Array.isArray(val.values); }, summary: 'Must be an array.'}],
                             setter: (inst, val) => inst.soilDrainage = val.values
                         },
-                    ]
-                },
-                {
-                    key: 'NRCS', 
-                    required: false,
-                    props: [
                         {
-                            key: 'Single Species Seeding Rate', 
+                            key: 'Soil Fertility', 
                             required: false,
-                            setter: (inst, val) => inst.nrcs.singleSpeciesSeedingRate = Number(val.values[0])
+                            // checks: [{validate: (val) => { return Array.isArray(val.values); }, summary: 'Must be an array.'}],
+                            setter: (inst, val) => inst.soilDrainage = val.values
                         },
                     ]
                 },
@@ -474,13 +488,12 @@ class NECrop extends Crop {
     init(){
         super.init();
 
-        this.coefficents = { plantingMethods: {} };
+        this.coefficients = { plantingMethods: {} };
         this.plantingDates = { }
-        this.nrcs = { }
-        this.custom = this.raw.custom ?? {};
+        this.custom = this?.raw?.custom ?? {};
 
         // validates and sets props.
-        this.validateProps(MWCrop.props);
+        this.validateProps(NECrop.props);
 
         return this;
     }
@@ -489,5 +502,5 @@ class NECrop extends Crop {
 
 
 module.exports = { 
-    Crop, MWCrop
+    Crop, MWCrop, NECrop
 }
