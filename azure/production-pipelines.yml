@@ -93,7 +93,6 @@ stages:
               manifests: |
                 $(Pipeline.Workspace)/manifests/deployment.yml
                 $(Pipeline.Workspace)/manifests/service.yml
-                $(Pipeline.Workspace)/manifests/memory_limit.yml
               imagePullSecrets: |
                 $(imagePullSecret)
               containers: |
@@ -135,7 +134,6 @@ stages:
               manifests: |
                 $(Pipeline.Workspace)/manifests/deployment.yml
                 $(Pipeline.Workspace)/manifests/service.yml
-                $(Pipeline.Workspace)/manifests/memory_limit.yml
               imagePullSecrets: |
                 $(imagePullSecret)
               containers: |
