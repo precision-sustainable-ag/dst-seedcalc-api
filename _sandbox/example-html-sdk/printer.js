@@ -48,8 +48,8 @@ function printMixRatiosPageDefault(calculator){
 
     console.log(`Mix Ratio Page (${crop.label}) Default Vals.`)
     console.log('--------------------------------------------')
-    console.log(`Single Species Seeding Rate PLS (${crop.coefficents.singleSpeciesSeedingRate}) x % of Single Species Seedings Rate (${percentOfRate.toFixed(2)}) = Mix Seeding Rate (${mixSeedingRate.toFixed(2)})`);
-    console.log(`\t${crop.coefficents.singleSpeciesSeedingRate} x ${percentOfRate.toFixed(2)} = ${mixSeedingRate.toFixed(2)}`);
+    console.log(`Single Species Seeding Rate PLS (${crop.coefficients.singleSpeciesSeedingRate}) x % of Single Species Seedings Rate (${percentOfRate.toFixed(2)}) = Mix Seeding Rate (${mixSeedingRate.toFixed(2)})`);
+    console.log(`\t${crop.coefficients.singleSpeciesSeedingRate} x ${percentOfRate.toFixed(2)} = ${mixSeedingRate.toFixed(2)}`);
     console.log(`Seeds Per Pound (${crop.seedsPerPound}) x Mix Seeding Rate (${mixSeedingRate.toFixed(2)}) = Seeds Per Acre (${seedsPerAcre.toFixed(2)})`);
     console.log(`\t${crop.seedsPerPound} x ${mixSeedingRate.toFixed(2)} = ${seedsPerAcre.toFixed(2)}`);
     console.log(`Seeds Per Acre (${seedsPerAcre.toFixed(2)}) x % Survival (85%) = Plants Per Acre (${plantsPerAcre.toFixed(2)})`);
