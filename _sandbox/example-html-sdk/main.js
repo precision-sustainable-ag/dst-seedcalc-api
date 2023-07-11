@@ -71,7 +71,10 @@ const MOCK_USER_INPUT = {
  * 
  * 
  */
-async function getCouncil(){
+const DEFAULT_GET_COUNCIL_PARAMS = 'indiana';
+async function getCouncil(params){
+    if(!params) params = DEFAULT_GET_COUNCIL_PARAMS;
+
     const STATES = await SELECTOR_API_CLIENT.get('/v2/regions?locality=state&context=seed_calc')
     .then(response => response.data.data)
     .catch(err => {
@@ -80,12 +83,12 @@ async function getCouncil(){
     });
 
     for(let state of STATES){
-        if(state.label === 'Indiana'){
+        if(state.label.trim().toLowerCase() === params.trim().toLowerCase()){
             return state.parents[0].shorthand;
         }
     }
 
-    throw new Error('Could not locate Indiana State.');
+    throw new Error(`Could not locate ${params} State.`);
 }
 
 /**
@@ -121,56 +124,94 @@ async function getCouncil(){
  * Theorhetically this is emulating the user selecting crops from the endpoint {species_selector_service}/v2/crops?regions=18&regions=180
  * to add to their mix, where the user first selects pea winter, then oats spring, and finally rapeseed.
  */
-async function getMix(){
-    const PEA_WINTER = await SELECTOR_API_CLIENT.get(`/v2/crops/148?regions=18&context=seed_calc&regions=180`)
-        .then(response => response.data.data)
-        .catch(e => {
-            console.log(e);
-            throw new Error('Failed to get Pea Winter');
-        });
-    const OATS_SPRING = await SELECTOR_API_CLIENT.get(`/v2/crops/23?regions=18&context=seed_calc&regions=180`)
-        .then(response => response.data.data)
-        .catch(e => {
-            console.log(e);
-            throw new Error('Failed to get Oats Spring');
-        });
-    const RAPESEED = await SELECTOR_API_CLIENT.get(`/v2/crops/161?regions=18&context=seed_calc&regions=180`)
-        .then(response => response.data.data)
-        .catch(e => {
-            console.log(e);
-            throw new Error('Failed to get Rapeseed');
-        });
+const DEFAULT_GET_MIX_PARAMS = [
+    {cropId:148, regions:[18,180], context:'seed_calc'}, // PEA
+    {cropId:23, regions:[18,180], context:'seed_calc'}, // OATS
+    {cropId:161, regions:[18,180], context:'seed_calc'}, // RAPESEED
+];
 
-    return [PEA_WINTER, OATS_SPRING, RAPESEED];
+async function getMix(params){
+    if(!params) params = DEFAULT_GET_MIX_PARAMS;
+
+    const MIX = [];
+
+    for(let param of params){
+        let uri = `/v2/crops/${param.cropId}?context=seed_calc`;
+        if(param.regions.length > 0){
+            for(let region of param.regions){
+                uri = `${uri}&regions=${region}`;
+            }
+        }
+
+        await SELECTOR_API_CLIENT.get(uri)
+        .then(response => {
+            const data = response.data.data;
+            MIX.push(data);
+        })
+        .catch(e => {
+            console.log(e);
+            console.log(param);
+            throw new Error(`Failed to get Crop (${param.cropId}) for Regions (${param.regions.join(', ')})`);
+        });
+    }
+
+    return MIX;
 }
 
-
+window.helpers = {
+    SELECTOR_API_CLIENT,
+    getMix,
+    getCouncil,
+    DEFAULT_GET_MIX_PARAMS,
+    DEFAULT_GET_COUNCIL_PARAMS,
+    MOCK_USER_INPUT,
+}
 
 /**
  * MAIN FUNCTION
+ * 
+ * Crops in Mix:
+ * 
+ * Pea, Field/Winter 
+ * ID = 148
+ * 
+ * Oats, Spring
+ * ID = 23
+ * 
+ * Rapeseed
+ * ID = 161
  */
 
 async function main(){
     const mix = await getMix();
     const council = await getCouncil();
 
-    const userInput = {
-        ...MOCK_USER_INPUT,
-        singleSpeciesSeedingRate: 3,
-        percentOfRate: 0.25,
-    }
+    // Here we emulate the state objects for user input handling.
+    const userInput = MOCK_USER_INPUT;
+
+    window.helpers.DEFAULT_CALC_PARAMS = {
+        mix, council, userInput
+    };
 
     const calculator = new SeedRateCalculator({mix, council, userInput});
 
-    /**
-     * Print frunctions can be found in the printer.js
-     */
+    window.helpers.calculator = calculator;
+
     printMix(mix);
     printUserInput(userInput);
     printMixOverview(calculator);
-    printMixRatiosPageDefault(calculator);
-    printMixRatiosPageCustom(calculator,userInput);
 
+    AdjustProportionsPage_Pea(mix[0],calculator);
+    AdjustProportionsPage_Rapeseed(mix[2],calculator);
+    ReviewYourMixPage_Oat(mix[1],calculator);
+
+
+    nrcsCheckSeedingRateWithNoNRCSStandardData(calculator);
+    nrcsCheckPlantingDate(calculator);
+    nrcsCheckPercentInMix(calculator);
+    nrcsCheckPlantingDate(calculator);
+    nrcsCheckSoilDrainage(calculator);
+    nrcsCheckWinterSurvival(calculator);
 }
 
 

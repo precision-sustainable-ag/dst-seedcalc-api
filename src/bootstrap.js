@@ -13,9 +13,9 @@ const { DocsProvider } = require('./app/providers/DocsProvider');
 
 const Providers = [
     LoggingProvider, //logging provider should be first so any other provider failures can be logged.
-    DatabaseProvider, //!db provider must be registered before models provider.
+    // DatabaseProvider, //!db provider must be registered before models provider.
     ValidatorProvider,
-    {provider: ModelsProvider, params: [DatabaseProvider]},
+    // {provider: ModelsProvider, params: [DatabaseProvider]},
     // {provider: QueueProvider, params: [queues]},
     // {provider: DatabaseListenersProvider, params: [DatabaseProvider,watching]},
 ];
