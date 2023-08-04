@@ -37,6 +37,7 @@ stages:
         echo APP_NAME="$(APP_NAME)" >> /home/vsts/work/1/s/.env
         echo APP_PORT="$(APP_PORT)" >> /home/vsts/work/1/s/.env
         echo APP_ENV="$(APP_ENV)" >> /home/vsts/work/1/s/.env
+        echo APP_URL="$(APP_URL)" >> /home/vsts/work/1/s/.env
         
         echo LOG_CHANNEL="$(LOG_CHANNEL)" >> /home/vsts/work/1/s/.env
         echo CONSOLE_LOG_LEVEL="$(CONSOLE_LOG_LEVEL)" >> /home/vsts/work/1/s/.env
@@ -44,13 +45,6 @@ stages:
         echo FILE_LOG_LEVEL="$(FILE_LOG_LEVEL)" >> /home/vsts/work/1/s/.env
         echo SLACK_WEBHOOK_URL="$(SLACK_WEBHOOK_URL)" >> /home/vsts/work/1/s/.env
         
-        echo DB_CONNECTION="$(DB_CONNECTION)" >> /home/vsts/work/1/s/.env
-        echo DB_DATABASE="$(DB_DATABASE)" >> /home/vsts/work/1/s/.env
-        echo DB_HOST="$(DB_HOST)" >> /home/vsts/work/1/s/.env
-        echo DB_PORT="$(DB_PORT)" >> /home/vsts/work/1/s/.env
-        echo DB_USERNAME="$(DB_USERNAME)" >> /home/vsts/work/1/s/.env
-        echo DB_PASSWORD="$(DB_PASSWORD)" >> /home/vsts/work/1/s/.env
-        echo DB_SSL="$(DB_SSL)" >> /home/vsts/work/1/s/.env
     - task: Docker@2
       displayName: Build and push an image to container registry
       inputs:
