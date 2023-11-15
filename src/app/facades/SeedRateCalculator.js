@@ -72,7 +72,7 @@ class NRCS {
 
         const maxInMix = config?.maxInMix ?? crop?.coefficients?.maxInMix;
         
-        console.log(percentInMix, '<=', maxInMix, ':', percentInMix <= maxInMix);
+        // console.log(percentInMix, '<=', maxInMix, ':', percentInMix <= maxInMix);
 
         return {
             passed: percentInMix <= maxInMix,
@@ -437,8 +437,8 @@ class SeedRateCalculator {
 
         if(!Array.isArray(mix)) mix = [mix];
         
-        console.log('FACTORIES', this.FACTORY_MAP);
-        console.log('COUNCIL',council,Object.keys(this.FACTORY_MAP).includes(council),this.FACTORY_MAP[council]);
+        // console.log('FACTORIES', this.FACTORY_MAP);
+        // console.log('COUNCIL',council,Object.keys(this.FACTORY_MAP).includes(council),this.FACTORY_MAP[council]);
 
         if(!Object.keys(this.FACTORY_MAP).includes(council)){
             throw new Error(`Invalid Council: ${council}`);
@@ -980,9 +980,9 @@ class NESeedRateCalculator extends SeedRateCalculator {
         crop = this.getCrop(crop);
         const soilFertilityModifer = this.soilFertilityModifier(crop, options);
         const group = crop.group;
-        const sumGroupInMix = this.speciesInMix[group];
-        console.log('%Defaul params:',soilFertilityModifer, '/', sumGroupInMix, `(${group})`)
-        return soilFertilityModifer/sumGroupInMix;
+        const sumSpeciesOfGroupInMix = this.speciesInMix[group];
+        // console.log('%Defaul params:',soilFertilityModifer, '/', sumSpeciesOfGroupInMix, `(${group})`)
+        return soilFertilityModifer/sumSpeciesOfGroupInMix;
     }
 
     /**
@@ -1021,17 +1021,17 @@ class NESeedRateCalculator extends SeedRateCalculator {
         const isMix = this.isMix;
         const isHighSoilFertility = this.isHighSoilFertility(options);
         const defaultModifier = options?.defaultSoilFertilityModifier ?? this.getDefaultSoilFertilityModifier(crop,options);
-        console.log('Soil Fert params:', isMix, isHighSoilFertility, defaultModifier, options, crop);
+        // console.log('Soil Fert params:', isMix, isHighSoilFertility, defaultModifier, options, crop);
         if(isMix){
             if(isHighSoilFertility){
                 return options?.highFertilityCompetition ?? crop?.coefficients?.highFertilityCompetition ?? defaultModifier;
             }
             return options?.lowFertilityCompetition ?? crop?.coefficients?.lowFertilityCompetition ?? defaultModifier
         }
-        
+
         if(isHighSoilFertility){
             return options?.highFertilityMonoculture ?? crop?.coefficients?.highFertilityMonoculture ?? defaultModifier;
-        }
+        }  
 
         return options?.lowFertilityMonoculture ?? crop?.coefficients?.lowFertilityMonoculture ?? defaultModifier
     }

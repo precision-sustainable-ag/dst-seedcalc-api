@@ -183,6 +183,10 @@ window.helpers = {
  */
 
 async function main(){
+    /**
+     * These are pulled form selector API
+     * And will have very little standardization across regions
+     */
     const mix = await getMix();
     const council = await getCouncil();
 
@@ -193,6 +197,9 @@ async function main(){
         mix, council, userInput
     };
 
+    /**
+     * Instantiate the SDK
+     */
     const calculator = new SeedRateCalculator({mix, council, userInput});
 
     window.helpers.calculator = calculator;
