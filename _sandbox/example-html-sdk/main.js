@@ -91,6 +91,12 @@ async function getCouncil(params){
     throw new Error(`Could not locate ${params} State.`);
 }
 
+
+async function getRegion(id){
+    return SELECTOR_API_CLIENT.get(`/v2/regions/${id}`)
+        .then(response => response.data.data)
+        .catch(err => null);
+}
 /**
  * STEP 2) CREATE MIX
  * Create a mix utilizing the Species Selector API
@@ -158,14 +164,42 @@ async function getMix(params){
     return MIX;
 }
 
-window.helpers = {
+const SCCC_ZONE_9_ID = 62;
+const SCCC_ZONE_8_ID = 60;
+
+const SCCC_USE_ZONE_ID = SCCC_ZONE_9_ID;
+
+const HELPERS = {
     SELECTOR_API_CLIENT,
     getMix,
     getCouncil,
+    getRegion,
     DEFAULT_GET_MIX_PARAMS,
     DEFAULT_GET_COUNCIL_PARAMS,
     MOCK_USER_INPUT,
+    mock: {
+        mix: {
+            sccc: {
+                council: 'sccc',
+                getRegions: async (zoneId) => { 
+                    const zone = await getRegion(zoneId);
+                    return [zone];
+                },
+                params: (zoneId) => [{cropId:54, regions:[zoneId], context:'seed_calc'},{cropId:64, regions:[zoneId], context:'seed_calc'},{cropId:28, regions:[zoneId], context:'seed_calc'}],
+                getCalculator: async (zoneId) => {
+                    const council = HELPERS.mock.mix.sccc.council;
+                    const regions = await HELPERS.mock.mix.sccc.getRegions(zoneId);
+                    const mix = await HELPERS.getMix(HELPERS.mock.mix.sccc.params(zoneId));
+                    return new SeedRateCalculator({council, mix, regions});
+                },
+                getZone8Calc: () => HELPERS.mock.mix.sccc.getCalculator(SCCC_ZONE_8_ID),
+                getZone9Calc: () => HELPERS.mock.mix.sccc.getCalculator(SCCC_ZONE_9_ID),
+            }
+        }
+    }
 }
+
+window.helpers = HELPERS;
 
 /**
  * MAIN FUNCTION

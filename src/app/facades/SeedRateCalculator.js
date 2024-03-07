@@ -5,6 +5,7 @@ class Options {
 
     static CALCULATED_PROPS = {
         plantingMethodModifier: (calculator, crop, options) => calculator.plantingMethodModifier(crop, options),
+        plantingTimeCoefficient: (calculator, crop, options) => calculator.plantingTimeCoefficient(crop, options),
         seedingRate: (calculator, crop, options) => calculator.seedingRate(crop,options),
         seedsPerAcre: (calculator, crop, options) => calculator.seedsPerAcre(crop,options),
     }
@@ -15,7 +16,10 @@ class Options {
 
     constructor(calculator, keys=[], {crop, options}) {
         this.calculator = calculator;
-        this.options = options;
+        this.options = {
+            ...calculator.userInput,
+            ...options
+        };
         this.crop = crop;
         this.keys = keys;
         this.props = {};
@@ -72,8 +76,6 @@ class NRCS {
 
         const maxInMix = config?.maxInMix ?? crop?.coefficients?.maxInMix;
         
-        console.log(percentInMix, '<=', maxInMix, ':', percentInMix <= maxInMix);
-
         return {
             passed: percentInMix <= maxInMix,
             error: 'Exceeds maximum percentage of mix.'
@@ -397,13 +399,15 @@ class SeedRateCalculator {
     static FACTORY_MAP = {
         'mccc': () => new MWSeedRateCalculator(),
         'neccc': () => new NESeedRateCalculator(),
+        'sccc': () => new SOSeedRateCalculator(),
     }
 
     static PROPS;
 
-    constructor({mix, council, userInput} = {}){
+    constructor({mix, council, regions, userInput} = {}){
+        if(!userInput) userInput = {};
         if(mix){
-            return SeedRateCalculator.factory({mix, council, userInput});
+            return SeedRateCalculator.factory({mix, council, regions, userInput});
         }
     }
 
@@ -429,7 +433,7 @@ class SeedRateCalculator {
      * 
      * @throws {Error} If council or mix is not provided or council is invalid.
      */
-    static factory({mix, council, userInput}){
+    static factory({mix, council, regions, userInput}){
         if(!council) throw new Error('council is a required parameter.');
         council = council.toLowerCase();
 
@@ -437,9 +441,6 @@ class SeedRateCalculator {
 
         if(!Array.isArray(mix)) mix = [mix];
         
-        console.log('FACTORIES', this.FACTORY_MAP);
-        console.log('COUNCIL',council,Object.keys(this.FACTORY_MAP).includes(council),this.FACTORY_MAP[council]);
-
         if(!Object.keys(this.FACTORY_MAP).includes(council)){
             throw new Error(`Invalid Council: ${council}`);
         }
@@ -451,6 +452,7 @@ class SeedRateCalculator {
         instance.mix = mix;
         instance.userInput = userInput;
         instance.council = council;
+        instance.regions = regions;
 
         return instance.init();
     }
@@ -469,7 +471,6 @@ class SeedRateCalculator {
         }
         this.sumSpeciesInMix();
         this.setProps();
-        this.nrcs = new NRCS({calculator: this});
         return this;
     }
 
@@ -492,11 +493,13 @@ class SeedRateCalculator {
 
         this.PROPS = {};
         this.PROPS.plantingMethodModifier = ['plantingMethod'];
+        this.PROPS.plantingTimeCoefficient = ['plantingDate'];
 
         this.PROPS.seedingRate = [
             'singleSpeciesSeedingRate', 
             'percentOfRate', 
             'plantingMethodModifier', 
+            'plantingTimeCoefficient', 
             'managementImpactOnMix', 
             'germination', 
             'purity',
@@ -586,17 +589,29 @@ class SeedRateCalculator {
 
         if(!plantingMethod) plantingMethod = this.userInput?.plantingMethod;
 
-        if(!plantingMethod){
-            return this.getDefaultPlantingMethodModifier(); 
-        }
+        let plantingMethodKey = this.getPlantingMethodKey(plantingMethod);
 
-        plantingMethod = plantingMethod.toLowerCase().trim();
-
-        if(typeof crop?.coefficients?.plantingMethods[plantingMethod] === 'undefined'){
+        if(typeof crop?.coefficients?.plantingMethods[plantingMethodKey] === 'undefined'){
             return this.getDefaultPlantingMethodModifier();
         }
         
         return crop.plantingMethodModifier = crop.coefficients.plantingMethods[plantingMethod];
+    }
+
+    getPlantingMethodKey(plantingMethodString){
+        if(!plantingMethodString || !(typeof plantingMethodString === 'string')) return false;
+
+        const map = {
+            "drilled": 'drilled',
+            "aerial": 'aerial',
+            "broadcast(with cultivation)": 'broadcastWithCultivation',
+            "broadcast(without cultivation)": 'broadcastWithoutCultivation',
+            "broadcast(with cultivation, no packing)": 'broadcastWithCultivationNoPacking',
+        }
+
+        plantingMethodString = plantingMethodString.toLowerCase().trim();
+
+        return map[plantingMethodString]
     }
 
     /**
@@ -823,14 +838,23 @@ class SeedRateCalculator {
             percentOfRate, 
             singleSpeciesSeedingRate, 
             plantingMethodModifier, 
+            plantingTimeCoefficient,
             germination, 
             managementImpactOnMix,
             purity,
+            mixCompetitionCoefficient
         } = options;
 
-        
+        if(!mixCompetitionCoefficient){
+            mixCompetitionCoefficient = this.getDefaultMixCompetitionCoefficient(crop,options);
+        }
+
         if(!percentOfRate){
             percentOfRate = this.getDefaultPercentOfSingleSpeciesSeedingRate(crop, options);
+        }
+
+        if(!plantingTimeCoefficient){
+            plantingTimeCoefficient = this.getDefaultPlantingTimeCoefficient(crop,options);
         }
         
         if(!singleSpeciesSeedingRate){
@@ -841,6 +865,14 @@ class SeedRateCalculator {
 
         if(plantingMethodModifier){
             seedingRate = seedingRate * plantingMethodModifier;
+        }
+
+        if(plantingTimeCoefficient){
+            seedingRate = seedingRate * plantingTimeCoefficient;
+        }
+
+        if(mixCompetitionCoefficient){
+            seedingRate = seedingRate * mixCompetitionCoefficient;
         }
 
         if(managementImpactOnMix){
@@ -855,6 +887,15 @@ class SeedRateCalculator {
             seedingRate = seedingRate / purity;
         }
 
+        console.log('calc params:',{percentOfRate, 
+            singleSpeciesSeedingRate, 
+            plantingMethodModifier, 
+            plantingTimeCoefficient,
+            germination, 
+            managementImpactOnMix,
+            purity,
+            mixCompetitionCoefficient});
+
         return crop.seedingRate = seedingRate;
     }
 
@@ -868,6 +909,18 @@ class SeedRateCalculator {
      */
     getDefaultPercentOfSingleSpeciesSeedingRate(crop){
         return 1/this.mixDiversity;
+    }
+
+    plantingTimeCoefficient(crop, options){
+        return this.getDefaultPlantingTimeCoefficient();
+    }
+
+    getDefaultPlantingTimeCoefficient(){
+        return 1;
+    }
+
+    getDefaultMixCompetitionCoefficient(){
+        return 1;
     }
 
     /**
@@ -914,6 +967,17 @@ class MWSeedRateCalculator extends SeedRateCalculator {
 
     constructor(){
         super();
+    }
+
+    /**
+     * Initalize the Calculator.
+     * 
+     * @returns {this}
+     */
+    init(){
+        super.init()
+        this.nrcs = new NRCS({calculator: this});
+        return this;
     }
 
 }
@@ -981,7 +1045,6 @@ class NESeedRateCalculator extends SeedRateCalculator {
         const soilFertilityModifer = this.soilFertilityModifier(crop, options);
         const group = crop.group;
         const sumGroupInMix = this.speciesInMix[group];
-        console.log('%Defaul params:',soilFertilityModifer, '/', sumGroupInMix, `(${group})`)
         return soilFertilityModifer/sumGroupInMix;
     }
 
@@ -1021,7 +1084,6 @@ class NESeedRateCalculator extends SeedRateCalculator {
         const isMix = this.isMix;
         const isHighSoilFertility = this.isHighSoilFertility(options);
         const defaultModifier = options?.defaultSoilFertilityModifier ?? this.getDefaultSoilFertilityModifier(crop,options);
-        console.log('Soil Fert params:', isMix, isHighSoilFertility, defaultModifier, options, crop);
         if(isMix){
             if(isHighSoilFertility){
                 return options?.highFertilityCompetition ?? crop?.coefficients?.highFertilityCompetition ?? defaultModifier;
@@ -1076,7 +1138,134 @@ class NESeedRateCalculator extends SeedRateCalculator {
 }
 
 
+/**
+ * SCCC Calculator
+ * 
+ * 
+ */
+class SOSeedRateCalculator extends SeedRateCalculator {
+
+    getFreezingZones(){
+        return [
+            'Zone 6',
+            'Zone 7',
+            'Zone 8',
+        ]
+    }
+
+    isFreezingZone(){
+        const freezingZones = new Set(this.getFreezingZones());
+        return freezingZones.has(this.zone.label);
+    }
+    
+    /**
+     * Initalize the Calculator.
+     * 
+     * @returns {this}
+     */
+    init(){
+        super.init()
+        this.nrcs = new NRCS({calculator: this});
+        this.zone = this.regions[0];
+        if(!this.zone) throw new Error('Could not identify Plant Hardiness Zone.');
+
+        return this;
+    }
+
+    setProps(){
+        const props = super.setProps();
+
+        props.plantingTimeCoefficient = [
+            'plantingDate',
+        ];
+
+        props.seedingRate = [ ...props.seedingRate, ...props.plantingTimeCoefficient, 'mixCompetitionCoefficient'];
+
+        return this.PROPS;
+    }
+
+    
+    plantingTimeCoefficient(crop, options={}){
+        if(options?.plantingTimeCoefficient) return options.plantingTimeCoefficient;
+
+        options = new Options(this, this.props('plantingTimeCoefficient'), {crop, options})
+        
+        crop = this.getCrop(crop);
+
+        let {
+            plantingDate,
+        } = options;
+
+        if(!plantingDate) return this.getDefaultPlantingTimeCoefficient();
+
+        plantingDate = new Date(plantingDate);
+
+        let earlyFallPlantingWindows = crop.plantingDates.earlyFallSeeding;
+        let lateFallPlantingWindows = crop.plantingDates.lateFallSeeding;
+
+        if(earlyFallPlantingWindows && earlyFallPlantingWindows.length > 0) {
+            for(let window of earlyFallPlantingWindows){
+
+                if(plantingDate >= window.start && plantingDate <= window.end) {
+                    if(crop.coefficients.planting.earlyFall) return crop.coefficients.planting.earlyFall;
+                    
+                    return this.getDefaultPlantingTimeCoefficient();
+                }
+            }
+        }
+
+        if(lateFallPlantingWindows && lateFallPlantingWindows.length > 0) {
+            for(let window of lateFallPlantingWindows){
+
+                if(plantingDate >= window.start && plantingDate <= window.end) {
+                    if(crop.coefficients.planting.lateFall) return crop.coefficients.planting.lateFall;
+
+                    return this.getDefaultPlantingTimeCoefficient();
+                }
+            }
+        }
+
+        return this.getDefaultPlantingTimeCoefficient();
+    }
+
+    getDefaultPlantingTimeCoefficient(){
+        return 1;
+    }
+
+    getDefaultMixCompetitionCoefficient(crop,options={}){
+        if(options?.mixCompetitionCoefficient) return options.mixCompetitionCoefficient;
+
+        crop = this.getCrop(crop);
+        
+        if(crop?.coefficients.mixCompetition) return crop.coefficients.mixCompetition;
+
+        return 1;
+    }
+
+    getDefaultPercentOfSingleSpeciesSeedingRate(crop,options={}){
+        if(options?.percentOfRate) return options.percentOfRate;
+        
+        crop = this.getCrop(crop);
+
+        if(this.isFreezingZone() === true){
+            return this.getFreezingZonesDefaultPercentOfSingleSpeciesSeedingRate(crop,options);
+        }
+        return super.getDefaultPercentOfSingleSpeciesSeedingRate(crop,options);
+    }
+
+    getFreezingZonesDefaultPercentOfSingleSpeciesSeedingRate(crop,options={}){
+        crop = this.getCrop(crop);
+
+        let group = crop?.group;
+        if(group?.label) group = group.label;
+
+        const countSpiecesOfGroupInMix = this.speciesInMix[group];
+        return 1/(this.mixDiversity * countSpiecesOfGroupInMix);
+    }
+
+}
+
 
 module.exports = {
-    Options, SeedRateCalculator, MWSeedRateCalculator, NRCS, NESeedRateCalculator
+    Options, SeedRateCalculator, MWSeedRateCalculator, NRCS, NESeedRateCalculator, SOSeedRateCalculator
 }

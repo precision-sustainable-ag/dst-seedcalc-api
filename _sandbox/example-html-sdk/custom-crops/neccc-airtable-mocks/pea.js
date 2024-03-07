@@ -39,5 +39,3 @@ const neccc_pea = () => {return {
         },  
     }
 }}
-
-module.exports = neccc_pea();

@@ -39,5 +39,3 @@ const neccc_oats = () => {return {
         },  
     }
 }}
-
-module.exports = neccc_oats();

@@ -1,6 +1,6 @@
 const { Controller } = require('../../../framework/controllers/Controller');
-const { Crop, MWCrop, NECrop } = require('../../facades/Crop');
-const { SeedRateCalculator, MWSeedRateCalculator, Options, NRCS, NESeedRateCalculator } = require('../../facades/SeedRateCalculator');
+const { Crop, MWCrop, NECrop, SOCrop } = require('../../facades/Crop');
+const { SeedRateCalculator, MWSeedRateCalculator, Options, NRCS, NESeedRateCalculator, SOSeedRateCalculator } = require('../../facades/SeedRateCalculator');
 const uglify = require('uglify-js');
 
 class ScriptsController extends Controller {
@@ -13,9 +13,11 @@ class ScriptsController extends Controller {
             ${SeedRateCalculator.toString()};
             ${MWSeedRateCalculator.toString()};
             ${NESeedRateCalculator.toString()};
+            ${SOSeedRateCalculator.toString()};
             ${Crop.toString()};
             ${MWCrop.toString()};
             ${NECrop.toString()};
+            ${SOCrop.toString()};
         `;
 
         if(params?.pretty === 'true'){

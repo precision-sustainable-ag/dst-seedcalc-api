@@ -38,5 +38,3 @@ const neccc_rapeseed = () => {return {
         },  
     }
 }}
-
-module.exports = neccc_rapeseed();

@@ -4,6 +4,7 @@ class Crop {
     static FACTORY_MAP = {
         'mccc': (data) => new MWCrop(data),
         'neccc': (data) => new NECrop(data),
+        'sccc': (data) => new SOCrop(data),
     }
 
 
@@ -118,11 +119,12 @@ class Crop {
 
     static interpretDateRange(range){
         let dates = range.split(' - ');
+        const currentYear = new Date().getFullYear(); 
         const container = [];
         for(let date of dates){
             let segments = date.split('/');
 
-            if(segments.length > 2){
+            if(segments.length >= 2){
                 date = `${segments[0]}/${segments[1]}`;
             }
 
@@ -361,12 +363,12 @@ class NECrop extends Crop {
                         {
                             key: 'Broadcast with Cultivation Coefficient', 
                             required: false,
-                            setter: (inst, val) => inst.coefficients.plantingMethods.broadcast = Number(val.values[0])
+                            setter: (inst, val) => inst.coefficients.plantingMethods.broadcastWithCultivation = Number(val.values[0])
                         },
                         {
                             key: 'Broadcast without Cultivation Coefficient', 
                             required: false,
-                            setter: (inst, val) => inst.coefficients.plantingMethods.broadcast = Number(val.values[0])
+                            setter: (inst, val) => inst.coefficients.plantingMethods.broadcastWithoutCultivation = Number(val.values[0])
                         },
                         {
                             key: 'Aerial Coefficient', 
@@ -500,7 +502,250 @@ class NECrop extends Crop {
 
 }
 
+class SOCrop extends Crop {
+
+    constructor(data){
+        super();
+    }
+
+    static props = [
+        {
+            key: 'attributes',
+            required: true,
+            props: [
+                {
+                    key: 'Coefficients',
+                    required: true,
+                    props: [
+                        {
+                            key: 'Mix Competition Coefficient', 
+                            required: false, 
+                            setter: (inst, val) => inst.coefficients.mixCompetition = Number(val.values[0])
+                        },
+                        {
+                            key: 'Broadcast with Cultivation Coefficient', 
+                            required: false,
+                            setter: (inst, val) => inst.coefficients.plantingMethods.broadcastWithCultivation = Number(val.values[0])
+                        },
+                        {
+                            key: 'Broadcast without Cultivation Coefficient', 
+                            required: false,
+                            setter: (inst, val) => inst.coefficients.plantingMethods.broadcastWithoutCultivation = Number(val.values[0])
+                        },
+                        {
+                            key: 'Broadcast with Cultivation, No Packing Coefficient', 
+                            required: false,
+                            setter: (inst, val) => inst.coefficients.plantingMethods.broadcastWithCultivationNoPacking = Number(val.values[0])
+                        },
+                        {
+                            key: 'Broadcast with Cultivation, No Packing Coefficient', 
+                            required: false,
+                            setter: (inst, val) => inst.coefficients.plantingMethods.aerial = Number(val.values[0])
+                        },
+                        {
+                            key: 'Standard High Fertility Monoculture Coefficient', 
+                            required: false,
+                            setter: (inst, val) => inst.coefficients.planting.standardHighFertilityMonoculture = Number(val.values[0])
+                        },
+                        {
+                            key: 'Early Fall/Winter Planting Coefficient', 
+                            required: false,
+                            setter: (inst, val) => inst.coefficients.planting.earlyFall = Number(val.values[0])
+                        },
+                        {
+                            key: 'Late Fall/Winter Planting Coefficient', 
+                            required: false,
+                            setter: (inst, val) => inst.coefficients.planting.lateFall = Number(val.values[0])
+                        },
+                    ]
+                },
+                {
+                    key: 'Planting', 
+                    required: true,
+                    props: [
+                        {
+                            key: 'Seeds per Pound', 
+                            required: true,
+                            setter: (inst, val) => inst.seedsPerPound = Number(val.values[0])
+                        },
+                        {
+                            key: 'Default Seeding Method', 
+                            required: true,
+                            setter: (inst, val) => inst.defaultSeedingMethod = Number(val.values[0])
+                        },
+                        {
+                            key: 'Base Seeding Rate', 
+                            required: true, 
+                            setter: (inst, val) => inst.coefficients.singleSpeciesSeedingRate = Number(val.values[0])
+                        },
+                        {
+                            key: 'Final Seeding Rate Min', 
+                            required: true,
+                            setter: (inst, val) => inst.finalSeedingRate.min = Number(val.values[0])
+                        },
+                        {
+                            key: 'Final Seeding Rate Max', 
+                            required: true,
+                            setter: (inst, val) => inst.finalSeedingRate.max = Number(val.values[0])
+                        },
+                    ]
+                },
+                {
+                    key: 'Soil Conditions', 
+                    required: true,
+                    props: [
+                        {
+                            key: 'Soil Drainage', 
+                            required: true,
+                            checks: [{validate: (val) => { return Array.isArray(val.values); }, summary: 'Must be an array.'}],
+                            setter: (inst, val) => inst.soilDrainage = val.values
+                        },
+                    ]
+                },
+                {
+                    key: 'Planting and Growth Windows', 
+                    required: false,
+                    props: [
+                        {   
+                            key: 'Reliable Establishment', 
+                            required: false, 
+                            setter: (inst, val) => {
+                                const container = inst.plantingDates.reliableEstablishement = [];
+                                for(let range of val.values){
+                                    let [start, end] = Crop.interpretDateRange(range);
+                                    container.push({
+                                        start, end, range
+                                    });
+                                }
+                            }
+                        },
+                        {   
+                            key: 'Freeze/Moisture Risk to Establishment', 
+                            required: false, 
+                            setter: (inst, val) => {
+                                const container = inst.plantingDates.riskToEstablishment = [];
+                                for(let range of val.values){
+                                    let [start, end] = Crop.interpretDateRange(range);
+                                    container.push({
+                                        start, end, range
+                                    });
+                                }
+                            }
+                        },
+                        {   
+                            key: 'Early Spring Date', 
+                            required: false, 
+                            setter: (inst, val) => {
+                                const container = inst.plantingDates.earlySpringSeeding = [];
+                                for(let range of val.values){
+                                    let [start, end] = Crop.interpretDateRange(range);
+                                    container.push({
+                                        start, end, range
+                                    });
+                                }
+                            }
+                        },
+                        {   
+                            key: 'Late Fall/Winter Date', 
+                            required: false, 
+                            setter: (inst, val) => {
+                                const container = inst.plantingDates.lateFallSeeding = [];
+                                for(let range of val.values){
+                                    let [start, end] = Crop.interpretDateRange(range);
+                                    container.push({
+                                        start, end, range
+                                    });
+                                }
+                            }
+                        },
+                        {   
+                            key: 'Early Fall/Winter Date', 
+                            required: false, 
+                            setter: (inst, val) => {
+                                const container = inst.plantingDates.earlyFallSeeding = [];
+                                for(let range of val.values){
+                                    let [start, end] = Crop.interpretDateRange(range);
+                                    container.push({
+                                        start, end, range
+                                    });
+                                }
+                            }
+                        },
+                        {   
+                            key: 'Standard Summer Date', 
+                            required: false, 
+                            setter: (inst, val) => {
+                                const container = inst.plantingDates.standardSummerSeeding = [];
+                                for(let range of val.values){
+                                    let [start, end] = Crop.interpretDateRange(range);
+                                    container.push({
+                                        start, end, range
+                                    });
+                                }
+                            }
+                        },
+                        {   
+                            key: 'Standard Spring Date', 
+                            required: false, 
+                            setter: (inst, val) => {
+                                const container = inst.plantingDates.standardSpringSeeding = [];
+                                for(let range of val.values){
+                                    let [start, end] = Crop.interpretDateRange(range);
+                                    container.push({
+                                        start, end, range
+                                    });
+                                }
+                            }
+                        },
+                        {   
+                            key: 'Standard Fall/Winter Date', 
+                            required: false, 
+                            setter: (inst, val) => {
+                                const container = inst.plantingDates.standardFallSeeding = [];
+                                for(let range of val.values){
+                                    let [start, end] = Crop.interpretDateRange(range);
+                                    container.push({
+                                        start, end, range
+                                    });
+                                }
+                            }
+                        },
+                        {   
+                            key: 'Average Frost', 
+                            required: false, 
+                            setter: (inst, val) => {
+                                const container = inst.plantingDates.averageFrost = [];
+                                for(let range of val.values){
+                                    let [start, end] = Crop.interpretDateRange(range);
+                                    container.push({
+                                        start, end, range
+                                    });
+                                }
+                            }
+                        },
+                    ]
+                },
+            ]
+        }
+    ];
+
+    init(){
+        super.init();
+
+        this.coefficients = { plantingMethods: {}, planting: {} };
+        this.plantingDates = { };
+        this.finalSeedingRate = {};
+        this.custom = this?.raw?.custom ?? {};
+
+        // validates and sets props.
+        this.validateProps(SOCrop.props);
+
+        return this;
+    }
+
+}
+
 
 module.exports = { 
-    Crop, MWCrop, NECrop
+    Crop, MWCrop, NECrop, SOCrop
 }
