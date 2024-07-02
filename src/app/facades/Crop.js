@@ -591,7 +591,7 @@ class SOCrop extends Crop {
                     ]
                 },
                 {
-                    key: 'Soil Conditions', 
+                    key: 'Environmental Tolerances', 
                     required: true,
                     props: [
                         {
