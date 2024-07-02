@@ -26,12 +26,20 @@ function printMixOverview(calculator){
     console.log('Is Mix?', calculator.isMix);
     console.log('Mix Diversity:',calculator.mixDiversity); // county of group types in mix
     console.log('Species In Mix:', calculator.speciesInMix);
+
+    const cropLabels = calculator.mix.map(crop => crop.label);
+    console.log('Crops in Mix:',cropLabels);
+
     console.log('--------------------------------------------\n\n')
 }
 
 function printMixRatiosPageDefault(calculator){
+    let crop;
+    // both crop declarations achieve the same thing.
+    // they both get a Crop Object instance of the crop in the calculators mix for the id of 148.
+    crop = calculator.crops[148]; // explicity get crop from crops object.
+    crop = calculator.getCrop({id:148}); // get crop using the getCrop function where id is a property of object parameter.
 
-    const crop = calculator.crops[148];
     const percentOfRate = calculator.getDefaultPercentOfSingleSpeciesSeedingRate(crop);
     const mixSeedingRate = calculator.mixSeedingRate(crop);
     const seedsPerAcre = calculator.seedsPerAcre(crop);
@@ -40,8 +48,8 @@ function printMixRatiosPageDefault(calculator){
 
     console.log(`Mix Ratio Page (${crop.label}) Default Vals.`)
     console.log('--------------------------------------------')
-    console.log(`Single Species Seeding Rate PLS (${crop.coefficents.singleSpeciesSeedingRate}) x % of Single Species Seedings Rate (${percentOfRate.toFixed(2)}) = Mix Seeding Rate (${mixSeedingRate.toFixed(2)})`);
-    console.log(`\t${crop.coefficents.singleSpeciesSeedingRate} x ${percentOfRate.toFixed(2)} = ${mixSeedingRate.toFixed(2)}`);
+    console.log(`Single Species Seeding Rate PLS (${crop.coefficients.singleSpeciesSeedingRate}) x % of Single Species Seedings Rate (${percentOfRate.toFixed(2)}) = Mix Seeding Rate (${mixSeedingRate.toFixed(2)})`);
+    console.log(`\t${crop.coefficients.singleSpeciesSeedingRate} x ${percentOfRate.toFixed(2)} = ${mixSeedingRate.toFixed(2)}`);
     console.log(`Seeds Per Pound (${crop.seedsPerPound}) x Mix Seeding Rate (${mixSeedingRate.toFixed(2)}) = Seeds Per Acre (${seedsPerAcre.toFixed(2)})`);
     console.log(`\t${crop.seedsPerPound} x ${mixSeedingRate.toFixed(2)} = ${seedsPerAcre.toFixed(2)}`);
     console.log(`Seeds Per Acre (${seedsPerAcre.toFixed(2)}) x % Survival (85%) = Plants Per Acre (${plantsPerAcre.toFixed(2)})`);
@@ -75,3 +83,11 @@ function printMixRatiosPageCustom(calculator, userInput){
     console.log('--------------------------------------------\n\n')
 }
 
+function printNrcsFailureErrors(errors){
+    console.log('Errors:')
+    for(let error of errors){
+        console.log('\t>',error.crop);
+        console.log('\t\t-',error.error);
+    }
+
+}

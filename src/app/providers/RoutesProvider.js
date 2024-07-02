@@ -20,25 +20,25 @@ class RoutesProvider extends Provider{
              */
         ];
     }
-
+    
     static async getRouters(){
 
-            const dir = 'routes';
-            const files = await getFilesFrom(dir);
-            const routers = {};
-            const exclude = this.exclude();
+        const dir = 'routes';
+        const files = await getFilesFrom(dir);
+        const routers = {};
+        const exclude = this.exclude();
 
-            for(let file of files){
-                if(exclude.includes(file)) continue;
-                
-                const module = await import(app_path(`${dir}/${file}`))
-                const router = module.default;
-                routers[file] = router;
+        for(let file of files){
+            if(exclude.includes(file)) continue;
+            
+            const module = require(app_path(dir,file))
+            const router = module;
+            routers[file] = router;
 
-            }
+        }
 
-            return routers;
-    }
+        return routers;
+}
 
     static async register(app){
 

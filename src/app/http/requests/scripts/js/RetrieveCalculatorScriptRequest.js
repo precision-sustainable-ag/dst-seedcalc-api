@@ -21,7 +21,7 @@ class RetrieveCalculatorScriptRequest extends Request {
      */
     parameters(){
         return [
-            // {in:'path',name:'id',schema:{type:'integer'},required:true},
+            {in:'query',name:'pretty',schema:{type:'boolean'},required:false},
         ];
     }
 

@@ -39,22 +39,42 @@ const MOCK_USER_INPUT = {
  * Adams County
  * ID = 180
  * 
- * To get the regions you can use the following steps:
- * 1) have the user select a State
- *      endpoint: {species_selector_service}/v2/regions?locality=state&context=seed_calc
- *      NOTE: here we use the context=seed_calc to ensure we only get states applicable to the seed calc application.
- * 2) once the user has selected a state we can get the child regions for that state, 
- *    this could include multiple region "types" ex: County , Zone , etc.
- *    a user should be prompted to pick 1 item from each "region type".
- *      endpoint: {species_selector_service}/v2/regions/{stateId}
- *      NOTE: we used {stateId} but you can perform this call using the id value from any region, but not all regions have child regions.
  * 
- * NOTE: when compiling the users regions, 
- *       you should treat the state region id and all child region ids the same and contain them in the same array.
+ * This can be retrieved 
+ * from the region object the user selects when picking a state.
+ * 
+ * A list of states can be acquired through the following HTTP request:
+ *   GET https://{selector-api}/v2/regions?locality=state&context=seed_calc
+ *   NOTE: here we use the context=seed_calc to ensure we only get states applicable to the seed calc application.
+ *
+ * Typically once you a user has selected a state, you will then prompt them to select child regions. 
+ * You can get the 1st level of child regions for a given region with the following HTTP Request:
+ *      GET https://{selector-api}/v2/regions/{region_id}
+ *      NOTE: This will only include 1st level children for the region_id given, 
+ *            it is possible that a selected child region could have its own children, but this is uncommon.
+ * It is most common that a region will only have 1 type of child region ( ex: County, or Plant Hardiness Zone)
+ * But it is possible that a region could have any number of types of child regions. 
+ * Typically the user should only select 1 of each type of child region, 
+ * selecting multiple child regions will most commonly cause attribute key collision producing unreliable data sets.
+ * You should only select multipule regions of a specific child type if you know you will not create collision errors.
+ * 
+ * the council information can be gathered from an item in the states array
+ * through this object path:
+ *
+ * state.parents[0].shorthand
+ * 
+ * NOTE: when compiling the regions query parameter array, 
+ *       it should include the id's for all regions that the user has selected.
+ *       Example: const regions = [18,180]
+ *          here you can see our regions contains the ids for Indiana(18) and Adams County(180) , 
+ *          where Adams County is a child region of Indiana.
  * 
  * 
  */
-async function getCouncil(){
+const DEFAULT_GET_COUNCIL_PARAMS = 'indiana';
+async function getCouncil(params){
+    if(!params) params = DEFAULT_GET_COUNCIL_PARAMS;
+
     const STATES = await SELECTOR_API_CLIENT.get('/v2/regions?locality=state&context=seed_calc')
     .then(response => response.data.data)
     .catch(err => {
@@ -63,17 +83,30 @@ async function getCouncil(){
     });
 
     for(let state of STATES){
-        if(state.label === 'Indiana'){
+        if(state.label.trim().toLowerCase() === params.trim().toLowerCase()){
             return state.parents[0].shorthand;
         }
     }
 
-    throw new Error('Could not locate Indiana State.');
+    throw new Error(`Could not locate ${params} State.`);
 }
 
+
+async function getRegion(id){
+    return SELECTOR_API_CLIENT.get(`/v2/regions/${id}`)
+        .then(response => response.data.data)
+        .catch(err => null);
+}
 /**
  * STEP 2) CREATE MIX
  * Create a mix utilizing the Species Selector API
+ * where each item in the array is either
+ *
+ * - the data object returned from the HTTP request
+ *   GET https://{selector-api}/v2/crops/{crop_id}?regions={region_id}&context=seed_calc  
+ *
+ * - an instantiated instance of the Crop Object class.
+ * 
  * NOTE: ( if building mix off user input, these calls would be made on user click )
  * 
  * 
@@ -97,56 +130,122 @@ async function getCouncil(){
  * Theorhetically this is emulating the user selecting crops from the endpoint {species_selector_service}/v2/crops?regions=18&regions=180
  * to add to their mix, where the user first selects pea winter, then oats spring, and finally rapeseed.
  */
-async function getMix(){
-    const PEA_WINTER = await SELECTOR_API_CLIENT.get(`/v2/crops/148?regions=18&context=seed_calc&regions=180`)
-        .then(response => response.data.data)
-        .catch(e => {
-            console.log(e);
-            throw new Error('Failed to get Pea Winter');
-        });
-    const OATS_SPRING = await SELECTOR_API_CLIENT.get(`/v2/crops/23?regions=18&context=seed_calc&regions=180`)
-        .then(response => response.data.data)
-        .catch(e => {
-            console.log(e);
-            throw new Error('Failed to get Oats Spring');
-        });
-    const RAPESEED = await SELECTOR_API_CLIENT.get(`/v2/crops/161?regions=18&context=seed_calc&regions=180`)
-        .then(response => response.data.data)
-        .catch(e => {
-            console.log(e);
-            throw new Error('Failed to get Rapeseed');
-        });
+const DEFAULT_GET_MIX_PARAMS = [
+    {cropId:148, regions:[18,180], context:'seed_calc'}, // PEA
+    {cropId:23, regions:[18,180], context:'seed_calc'}, // OATS
+    {cropId:161, regions:[18,180], context:'seed_calc'}, // RAPESEED
+];
 
-    return [PEA_WINTER, OATS_SPRING, RAPESEED];
+async function getMix(params){
+    if(!params) params = DEFAULT_GET_MIX_PARAMS;
+
+    const MIX = [];
+
+    for(let param of params){
+        let uri = `/v2/crops/${param.cropId}?context=seed_calc`;
+        if(param.regions.length > 0){
+            for(let region of param.regions){
+                uri = `${uri}&regions=${region}`;
+            }
+        }
+
+        await SELECTOR_API_CLIENT.get(uri)
+        .then(response => {
+            const data = response.data.data;
+            MIX.push(data);
+        })
+        .catch(e => {
+            console.log(e);
+            console.log(param);
+            throw new Error(`Failed to get Crop (${param.cropId}) for Regions (${param.regions.join(', ')})`);
+        });
+    }
+
+    return MIX;
 }
 
+const SCCC_ZONE_9_ID = 62;
+const SCCC_ZONE_8_ID = 60;
 
+const SCCC_USE_ZONE_ID = SCCC_ZONE_9_ID;
+
+const HELPERS = {
+    SELECTOR_API_CLIENT,
+    getMix,
+    getCouncil,
+    getRegion,
+    DEFAULT_GET_MIX_PARAMS,
+    DEFAULT_GET_COUNCIL_PARAMS,
+    MOCK_USER_INPUT,
+    mock: {
+        mix: {
+            sccc: {
+                council: 'sccc',
+                getRegions: async (zoneId) => { 
+                    const zone = await getRegion(zoneId);
+                    return [zone];
+                },
+                params: (zoneId) => [{cropId:54, regions:[zoneId], context:'seed_calc'},{cropId:64, regions:[zoneId], context:'seed_calc'},{cropId:28, regions:[zoneId], context:'seed_calc'}],
+                getCalculator: async (zoneId) => {
+                    const council = HELPERS.mock.mix.sccc.council;
+                    const regions = await HELPERS.mock.mix.sccc.getRegions(zoneId);
+                    const mix = await HELPERS.getMix(HELPERS.mock.mix.sccc.params(zoneId));
+                    return new SeedRateCalculator({council, mix, regions});
+                },
+                getZone8Calc: () => HELPERS.mock.mix.sccc.getCalculator(SCCC_ZONE_8_ID),
+                getZone9Calc: () => HELPERS.mock.mix.sccc.getCalculator(SCCC_ZONE_9_ID),
+            }
+        }
+    }
+}
+
+window.helpers = HELPERS;
 
 /**
  * MAIN FUNCTION
+ * 
+ * Crops in Mix:
+ * 
+ * Pea, Field/Winter 
+ * ID = 148
+ * 
+ * Oats, Spring
+ * ID = 23
+ * 
+ * Rapeseed
+ * ID = 161
  */
 
 async function main(){
     const mix = await getMix();
     const council = await getCouncil();
 
-    const userInput = {
-        ...MOCK_USER_INPUT,
-        singleSpeciesSeedingRate: 3,
-        percentOfRate: 0.25,
-    }
+    // Here we emulate the state objects for user input handling.
+    const userInput = MOCK_USER_INPUT;
+
+    window.helpers.DEFAULT_CALC_PARAMS = {
+        mix, council, userInput
+    };
 
     const calculator = new SeedRateCalculator({mix, council, userInput});
 
-    /**
-     * Print frunctions can be found in the printer.js
-     */
+    window.helpers.calculator = calculator;
+
     printMix(mix);
     printUserInput(userInput);
     printMixOverview(calculator);
-    printMixRatiosPageDefault(calculator);
-    printMixRatiosPageCustom(calculator,userInput);
 
+    AdjustProportionsPage_Pea(mix[0],calculator);
+    AdjustProportionsPage_Rapeseed(mix[2],calculator);
+    ReviewYourMixPage_Oat(mix[1],calculator);
+
+
+    nrcsCheckSeedingRateWithNoNRCSStandardData(calculator);
+    nrcsCheckPlantingDate(calculator);
+    nrcsCheckPercentInMix(calculator);
+    nrcsCheckPlantingDate(calculator);
+    nrcsCheckSoilDrainage(calculator);
+    nrcsCheckWinterSurvival(calculator);
 }
 
 
