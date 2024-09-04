@@ -160,32 +160,32 @@ class MWCrop extends Crop {
                         },
                         {
                             key: 'Broadcast Coefficient', 
-                            required: true,
+                            required: false,
                             setter: (inst, val) => inst.coefficients.plantingMethods.broadcast = Number(val.values[0])
                         },
                         {
                             key: 'Aerial Coefficient', 
-                            required: true,
+                            required: false,
                             setter: (inst, val) => inst.coefficients.plantingMethods.aerial = Number(val.values[0])
                         },
                         {
                             key: 'Precision Coefficient', 
-                            required: true,
+                            required: false,
                             setter: (inst, val) => inst.coefficients.plantingMethods.precision = Number(val.values[0])
                         },
                         {
                             key: '% Live Seed to Emergence', 
-                            required: true,
+                            required: false,
                             setter: (inst, val) => inst.coefficients.liveSeedToEmergence = Number(val.values[0])
                         },
                         {
                             key: 'Max % Allowed in Mix',
-                            required: true,
+                            required: false,
                             setter: (inst, val) => inst.coefficients.maxInMix = Number(val.values[0])
                         },
                         {
                             key: '% Chance of Winter Survial', 
-                            required: true,
+                            required: false,
                             setter: (inst, val) => inst.coefficients.chanceWinterSurvival = Number(val.values[0])
                         },
                     ]
@@ -201,7 +201,7 @@ class MWCrop extends Crop {
                         },
                         {   
                             key: 'Planting Methods', 
-                            required: true, 
+                            required: false, 
                             checks: [{validate: (val) => { return Array.isArray(val.values); }, summary: 'Must be an array.'}],
                             setter: (inst, val) => inst.plantingMethods = val.values
                         },
