@@ -1,8 +1,4 @@
 
-class FileWriter {
-    
-}
-
 class It {
 
     static ShouldReturnStatus(req, status){
