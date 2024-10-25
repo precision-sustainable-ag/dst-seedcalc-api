@@ -538,7 +538,7 @@ class SOCrop extends Crop {
                             setter: (inst, val) => inst.coefficients.plantingMethods.broadcastWithCultivationNoPacking = Number(val.values[0])
                         },
                         {
-                            key: 'Broadcast with Cultivation, No Packing Coefficient', 
+                            key: 'Aerial Coefficient', 
                             required: false,
                             setter: (inst, val) => inst.coefficients.plantingMethods.aerial = Number(val.values[0])
                         },
