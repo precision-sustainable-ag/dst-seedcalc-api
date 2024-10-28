@@ -1,0 +1,2156 @@
+[
+    {
+      "crop": "Barley ",
+      "state": "Illinois",
+      "crop_id": 32,
+      "region_id": 17
+    },
+    {
+      "crop": "Buckwheat",
+      "state": "Illinois",
+      "crop_id": 12,
+      "region_id": 17
+    },
+    {
+      "crop": "Clover, Balansa",
+      "state": "Illinois",
+      "crop_id": 45,
+      "region_id": 17
+    },
+    {
+      "crop": "Clover, Berseem",
+      "state": "Illinois",
+      "crop_id": 44,
+      "region_id": 17
+    },
+    {
+      "crop": "Clover, Crimson",
+      "state": "Illinois",
+      "crop_id": 43,
+      "region_id": 17
+    },
+    {
+      "crop": "Clover, Red ",
+      "state": "Illinois",
+      "crop_id": 42,
+      "region_id": 17
+    },
+    {
+      "crop": "Collards or Kale",
+      "state": "Illinois",
+      "crop_id": 122,
+      "region_id": 17
+    },
+    {
+      "crop": "Cowpeas",
+      "state": "Illinois",
+      "crop_id": 40,
+      "region_id": 17
+    },
+    {
+      "crop": "Flax",
+      "state": "Illinois",
+      "crop_id": 126,
+      "region_id": 17
+    },
+    {
+      "crop": "Millet, Japanese",
+      "state": "Illinois",
+      "crop_id": 28,
+      "region_id": 17
+    },
+    {
+      "crop": "Millet, Pearl",
+      "state": "Illinois",
+      "crop_id": 26,
+      "region_id": 17
+    },
+    {
+      "crop": "Mustard, Oriental",
+      "state": "Illinois",
+      "crop_id": 8,
+      "region_id": 17
+    },
+    {
+      "crop": "Oats, Spring",
+      "state": "Illinois",
+      "crop_id": 23,
+      "region_id": 17
+    },
+    {
+      "crop": "Pea, Field/Winter",
+      "state": "Illinois",
+      "crop_id": 148,
+      "region_id": 17
+    },
+    {
+      "crop": "Phacelia",
+      "state": "Illinois",
+      "crop_id": 11,
+      "region_id": 17
+    },
+    {
+      "crop": "Radish, Oilseed/Forage",
+      "state": "Illinois",
+      "crop_id": 154,
+      "region_id": 17
+    },
+    {
+      "crop": "Rapeseed/Canola",
+      "state": "Illinois",
+      "crop_id": 161,
+      "region_id": 17
+    },
+    {
+      "crop": "Rye, Cereal",
+      "state": "Illinois",
+      "crop_id": 22,
+      "region_id": 17
+    },
+    {
+      "crop": "Ryegrass, Annual",
+      "state": "Illinois",
+      "crop_id": 22,
+      "region_id": 17
+    },
+    {
+      "crop": "Sorghum, Forage",
+      "state": "Illinois",
+      "crop_id": 167,
+      "region_id": 17
+    },
+    {
+      "crop": "Sorghum, Grain",
+      "state": "Illinois",
+      "crop_id": 20,
+      "region_id": 17
+    },
+    {
+      "crop": "Sorghum-Sudangrass",
+      "state": "Illinois",
+      "crop_id": 19,
+      "region_id": 17
+    },
+    {
+      "crop": "Sudangrass",
+      "state": "Illinois",
+      "crop_id": 18,
+      "region_id": 17
+    },
+    {
+      "crop": "Sunflower, Black Oil",
+      "state": "Illinois",
+      "crop_id": 10,
+      "region_id": 17
+    },
+    {
+      "crop": "Sunn Hemp",
+      "state": "Illinois",
+      "crop_id": 36,
+      "region_id": 17
+    },
+    {
+      "crop": "Sweetclover",
+      "state": "Illinois",
+      "crop_id": 182,
+      "region_id": 17
+    },
+    {
+      "crop": "Triticale, Winter",
+      "state": "Illinois",
+      "crop_id": 15,
+      "region_id": 17
+    },
+    {
+      "crop": "Turnip, Forage",
+      "state": "Illinois",
+      "crop_id": 75,
+      "region_id": 17
+    },
+    {
+      "crop": "Vetch, Hairy",
+      "state": "Illinois",
+      "crop_id": 34,
+      "region_id": 17
+    },
+    {
+      "crop": "Wheat, Winter",
+      "state": "Illinois",
+      "crop_id": 13,
+      "region_id": 17
+    },
+    {
+      "crop": "Barley, Spring",
+      "state": "Iowa",
+      "crop_id": 33,
+      "region_id": 19
+    },
+    {
+      "crop": "Barley, Winter",
+      "state": "Iowa",
+      "crop_id": 32,
+      "region_id": 19
+    },
+    {
+      "crop": "Beans, Mung",
+      "state": "Iowa",
+      "crop_id": 112,
+      "region_id": 19
+    },
+    {
+      "crop": "Buckwheat",
+      "state": "Iowa",
+      "crop_id": 12,
+      "region_id": 19
+    },
+    {
+      "crop": "Camelina, Winter",
+      "state": "Iowa",
+      "crop_id": 119,
+      "region_id": 19
+    },
+    {
+      "crop": "Clover, Berseem ",
+      "state": "Iowa",
+      "crop_id": 44,
+      "region_id": 19
+    },
+    {
+      "crop": "Clover, Crimson ",
+      "state": "Iowa",
+      "crop_id": 43,
+      "region_id": 19
+    },
+    {
+      "crop": "Clover, Red ",
+      "state": "Iowa",
+      "crop_id": 42,
+      "region_id": 19
+    },
+    {
+      "crop": "Clover, White ",
+      "state": "Iowa",
+      "crop_id": 41,
+      "region_id": 19
+    },
+    {
+      "crop": "Cowpea ",
+      "state": "Iowa",
+      "crop_id": 40,
+      "region_id": 19
+    },
+    {
+      "crop": "Flax",
+      "state": "Iowa",
+      "crop_id": 126,
+      "region_id": 19
+    },
+    {
+      "crop": "Kale",
+      "state": "Iowa",
+      "crop_id": 130,
+      "region_id": 19
+    },
+    {
+      "crop": "Millet",
+      "state": "Iowa",
+      "crop_id": 135,
+      "region_id": 19
+    },
+    {
+      "crop": "Mustard",
+      "state": "Iowa",
+      "crop_id": 8,
+      "region_id": 19
+    },
+    {
+      "crop": "Oats",
+      "state": "Iowa",
+      "crop_id": 25,
+      "region_id": 19
+    },
+    {
+      "crop": "Pea, Winter ",
+      "state": "Iowa",
+      "crop_id": 38,
+      "region_id": 19
+    },
+    {
+      "crop": "Radish",
+      "state": "Iowa",
+      "crop_id": 154,
+      "region_id": 19
+    },
+    {
+      "crop": "Rapeseed",
+      "state": "Iowa",
+      "crop_id": 161,
+      "region_id": 19
+    },
+    {
+      "crop": "Ryegrass, Annual ",
+      "state": "Iowa",
+      "crop_id": 22,
+      "region_id": 19
+    },
+    {
+      "crop": "Rye, Winter Cereal",
+      "state": "Iowa",
+      "crop_id": 164,
+      "region_id": 19
+    },
+    {
+      "crop": "Sorghum, Forage ",
+      "state": "Iowa",
+      "crop_id": 167,
+      "region_id": 19
+    },
+    {
+      "crop": "Sorghum-sudangrass",
+      "state": "Iowa",
+      "crop_id": 19,
+      "region_id": 19
+    },
+    {
+      "crop": "Sudangrass",
+      "state": "Iowa",
+      "crop_id": 18,
+      "region_id": 19
+    },
+    {
+      "crop": "Sunflower",
+      "state": "Iowa",
+      "crop_id": 10,
+      "region_id": 19
+    },
+    {
+      "crop": "Sunn Hemp",
+      "state": "Iowa",
+      "crop_id": 36,
+      "region_id": 19
+    },
+    {
+      "crop": "Teff",
+      "state": "Iowa",
+      "crop_id": 17,
+      "region_id": 19
+    },
+    {
+      "crop": "Triticale, Winter",
+      "state": "Iowa",
+      "crop_id": 15,
+      "region_id": 19
+    },
+    {
+      "crop": "Turnip",
+      "state": "Iowa",
+      "crop_id": 75,
+      "region_id": 19
+    },
+    {
+      "crop": "Vetch, Common ",
+      "state": "Iowa",
+      "crop_id": 78,
+      "region_id": 19
+    },
+    {
+      "crop": "Vetch, Hairy",
+      "state": "Iowa",
+      "crop_id": 34,
+      "region_id": 19
+    },
+    {
+      "crop": "Wheat, Spring ",
+      "state": "Iowa",
+      "crop_id": 14,
+      "region_id": 19
+    },
+    {
+      "crop": "Wheat, Winter",
+      "state": "Iowa",
+      "crop_id": 13,
+      "region_id": 19
+    },
+    {
+      "crop": "Alfalfa Dormant",
+      "state": "Michigan",
+      "crop_id": 105,
+      "region_id": 26
+    },
+    {
+      "crop": "Alfalfa Non-Dormant",
+      "state": "Michigan",
+      "crop_id": 105,
+      "region_id": 26
+    },
+    {
+      "crop": "Barley",
+      "state": "Michigan",
+      "crop_id": 32,
+      "region_id": 26
+    },
+    {
+      "crop": "Buckwheat",
+      "state": "Michigan",
+      "crop_id": 12,
+      "region_id": 26
+    },
+    {
+      "crop": "Clover, Berseem",
+      "state": "Michigan",
+      "crop_id": 44,
+      "region_id": 26
+    },
+    {
+      "crop": "Clover, Crimson",
+      "state": "Michigan",
+      "crop_id": 43,
+      "region_id": 26
+    },
+    {
+      "crop": "Clover, Red",
+      "state": "Michigan",
+      "crop_id": 42,
+      "region_id": 26
+    },
+    {
+      "crop": "Millet, Pearl ",
+      "state": "Michigan",
+      "crop_id": 26,
+      "region_id": 26
+    },
+    {
+      "crop": "Mustards",
+      "state": "Michigan",
+      "crop_id": 8,
+      "region_id": 26
+    },
+    {
+      "crop": "Oats",
+      "state": "Michigan",
+      "crop_id": 25,
+      "region_id": 26
+    },
+    {
+      "crop": "Peas, Field/Winter",
+      "state": "Michigan",
+      "crop_id": 151,
+      "region_id": 26
+    },
+    {
+      "crop": "Radish, Oilseed",
+      "state": "Michigan",
+      "crop_id": 154,
+      "region_id": 26
+    },
+    {
+      "crop": "Rapeseed",
+      "state": "Michigan",
+      "crop_id": 161,
+      "region_id": 26
+    },
+    {
+      "crop": "Rye, Cereal ",
+      "state": "Michigan",
+      "crop_id": 22,
+      "region_id": 26
+    },
+    {
+      "crop": "Ryegrass, Annual ",
+      "state": "Michigan",
+      "crop_id": 22,
+      "region_id": 26
+    },
+    {
+      "crop": "Sorghum-Sudangrass",
+      "state": "Michigan",
+      "crop_id": 19,
+      "region_id": 26
+    },
+    {
+      "crop": "Soybeans",
+      "state": "Michigan",
+      "crop_id": 197,
+      "region_id": 26
+    },
+    {
+      "crop": "Triticale",
+      "state": "Michigan",
+      "crop_id": 15,
+      "region_id": 26
+    },
+    {
+      "crop": "Turnips, Forage",
+      "state": "Michigan",
+      "crop_id": 75,
+      "region_id": 26
+    },
+    {
+      "crop": "Vetch, Hairy ",
+      "state": "Michigan",
+      "crop_id": 34,
+      "region_id": 26
+    },
+    {
+      "crop": "Wheat",
+      "state": "Michigan",
+      "crop_id": 13,
+      "region_id": 26
+    },
+    {
+      "crop": "Alfalfa",
+      "state": "Minnesota",
+      "crop_id": 105,
+      "region_id": 27
+    },
+    {
+      "crop": "Barley, Spring",
+      "state": "Minnesota",
+      "crop_id": 33,
+      "region_id": 27
+    },
+    {
+      "crop": "Barley, Winter",
+      "state": "Minnesota",
+      "crop_id": 32,
+      "region_id": 27
+    },
+    {
+      "crop": "Buckwheat",
+      "state": "Minnesota",
+      "crop_id": 12,
+      "region_id": 27
+    },
+    {
+      "crop": "Cabbage",
+      "state": "Minnesota",
+      "crop_id": 116,
+      "region_id": 27
+    },
+    {
+      "crop": "Camelina, Winter",
+      "state": "Minnesota",
+      "crop_id": 119,
+      "region_id": 27
+    },
+    {
+      "crop": "Chickpea",
+      "state": "Minnesota",
+      "crop_id": 53,
+      "region_id": 27
+    },
+    {
+      "crop": "Clover, Berseem",
+      "state": "Minnesota",
+      "crop_id": 44,
+      "region_id": 27
+    },
+    {
+      "crop": "Clover, Crimson",
+      "state": "Minnesota",
+      "crop_id": 43,
+      "region_id": 27
+    },
+    {
+      "crop": "Clover, Red",
+      "state": "Minnesota",
+      "crop_id": 42,
+      "region_id": 27
+    },
+    {
+      "crop": "Clover, White",
+      "state": "Minnesota",
+      "crop_id": 41,
+      "region_id": 27
+    },
+    {
+      "crop": "Cowpea",
+      "state": "Minnesota",
+      "crop_id": 40,
+      "region_id": 27
+    },
+    {
+      "crop": "Flax",
+      "state": "Minnesota",
+      "crop_id": 126,
+      "region_id": 27
+    },
+    {
+      "crop": "Kale",
+      "state": "Minnesota",
+      "crop_id": 130,
+      "region_id": 27
+    },
+    {
+      "crop": "Lentils",
+      "state": "Minnesota",
+      "crop_id": 131,
+      "region_id": 27
+    },
+    {
+      "crop": "Millet, Foxtail",
+      "state": "Minnesota",
+      "crop_id": 64,
+      "region_id": 27
+    },
+    {
+      "crop": "Millet, Japanese",
+      "state": "Minnesota",
+      "crop_id": 28,
+      "region_id": 27
+    },
+    {
+      "crop": "Millet, Pearl ",
+      "state": "Minnesota",
+      "crop_id": 26,
+      "region_id": 27
+    },
+    {
+      "crop": "Millet, Proso",
+      "state": "Minnesota",
+      "crop_id": 65,
+      "region_id": 27
+    },
+    {
+      "crop": "Mustard",
+      "state": "Minnesota",
+      "crop_id": 8,
+      "region_id": 27
+    },
+    {
+      "crop": "Oats",
+      "state": "Minnesota",
+      "crop_id": 25,
+      "region_id": 27
+    },
+    {
+      "crop": "Pea, Field/Winter",
+      "state": "Minnesota",
+      "crop_id": 148,
+      "region_id": 27
+    },
+    {
+      "crop": "Phacelia",
+      "state": "Minnesota",
+      "crop_id": 11,
+      "region_id": 27
+    },
+    {
+      "crop": "Radish",
+      "state": "Minnesota",
+      "crop_id": 154,
+      "region_id": 27
+    },
+    {
+      "crop": "Rapeseed/canola",
+      "state": "Minnesota",
+      "crop_id": 161,
+      "region_id": 27
+    },
+    {
+      "crop": "Ryegrass, Annual",
+      "state": "Minnesota",
+      "crop_id": 22,
+      "region_id": 27
+    },
+    {
+      "crop": "Rye, Winter Cereal ",
+      "state": "Minnesota",
+      "crop_id": 164,
+      "region_id": 27
+    },
+    {
+      "crop": "Sorghum-sudangrass",
+      "state": "Minnesota",
+      "crop_id": 19,
+      "region_id": 27
+    },
+    {
+      "crop": "Soybeans",
+      "state": "Minnesota",
+      "crop_id": 197,
+      "region_id": 27
+    },
+    {
+      "crop": "Sudangrass",
+      "state": "Minnesota",
+      "crop_id": 18,
+      "region_id": 27
+    },
+    {
+      "crop": "Sunflower",
+      "state": "Minnesota",
+      "crop_id": 10,
+      "region_id": 27
+    },
+    {
+      "crop": "Triticale, Winter",
+      "state": "Minnesota",
+      "crop_id": 15,
+      "region_id": 27
+    },
+    {
+      "crop": "Turnip",
+      "state": "Minnesota",
+      "crop_id": 75,
+      "region_id": 27
+    },
+    {
+      "crop": "Wheat, Spring",
+      "state": "Minnesota",
+      "crop_id": 14,
+      "region_id": 27
+    },
+    {
+      "crop": "Wheat, Winter",
+      "state": "Minnesota",
+      "crop_id": 13,
+      "region_id": 27
+    },
+    {
+      "crop": "Barley, Spring",
+      "state": "Missouri",
+      "crop_id": 33,
+      "region_id": 29
+    },
+    {
+      "crop": "Barley, Winter",
+      "state": "Missouri",
+      "crop_id": 32,
+      "region_id": 29
+    },
+    {
+      "crop": "Beans, Mung",
+      "state": "Missouri",
+      "crop_id": 112,
+      "region_id": 29
+    },
+    {
+      "crop": "Buckwheat",
+      "state": "Missouri",
+      "crop_id": 12,
+      "region_id": 29
+    },
+    {
+      "crop": "Clover, Crimson",
+      "state": "Missouri",
+      "crop_id": 43,
+      "region_id": 29
+    },
+    {
+      "crop": "Clover, Red",
+      "state": "Missouri",
+      "crop_id": 42,
+      "region_id": 29
+    },
+    {
+      "crop": "Collards or Kale",
+      "state": "Missouri",
+      "crop_id": 122,
+      "region_id": 29
+    },
+    {
+      "crop": "Cowpea",
+      "state": "Missouri",
+      "crop_id": 40,
+      "region_id": 29
+    },
+    {
+      "crop": "Flax",
+      "state": "Missouri",
+      "crop_id": 126,
+      "region_id": 29
+    },
+    {
+      "crop": "Millet, Pearl",
+      "state": "Missouri",
+      "crop_id": 26,
+      "region_id": 29
+    },
+    {
+      "crop": "Mustard",
+      "state": "Missouri",
+      "crop_id": 8,
+      "region_id": 29
+    },
+    {
+      "crop": "Oats, Black ",
+      "state": "Missouri",
+      "crop_id": 25,
+      "region_id": 29
+    },
+    {
+      "crop": "Oats, Spring",
+      "state": "Missouri",
+      "crop_id": 23,
+      "region_id": 29
+    },
+    {
+      "crop": "Oats, Winter (Bob)",
+      "state": "Missouri",
+      "crop_id": 25,
+      "region_id": 29
+    },
+    {
+      "crop": "Pea, Winter",
+      "state": "Missouri",
+      "crop_id": 38,
+      "region_id": 29
+    },
+    {
+      "crop": "Radish",
+      "state": "Missouri",
+      "crop_id": 154,
+      "region_id": 29
+    },
+    {
+      "crop": "Rapeseed",
+      "state": "Missouri",
+      "crop_id": 161,
+      "region_id": 29
+    },
+    {
+      "crop": "Ryegrass, Annual",
+      "state": "Missouri",
+      "crop_id": 22,
+      "region_id": 29
+    },
+    {
+      "crop": "Rye, Winter Cereal",
+      "state": "Missouri",
+      "crop_id": 164,
+      "region_id": 29
+    },
+    {
+      "crop": "Sorghum, Forage",
+      "state": "Missouri",
+      "crop_id": 167,
+      "region_id": 29
+    },
+    {
+      "crop": "Sorghum-sudangrass",
+      "state": "Missouri",
+      "crop_id": 19,
+      "region_id": 29
+    },
+    {
+      "crop": "Soybeans",
+      "state": "Missouri",
+      "crop_id": 197,
+      "region_id": 29
+    },
+    {
+      "crop": "Sunflower ",
+      "state": "Missouri",
+      "crop_id": 10,
+      "region_id": 29
+    },
+    {
+      "crop": "Sunn Hemp",
+      "state": "Missouri",
+      "crop_id": 36,
+      "region_id": 29
+    },
+    {
+      "crop": "Triticale, Winter",
+      "state": "Missouri",
+      "crop_id": 15,
+      "region_id": 29
+    },
+    {
+      "crop": "Turnips",
+      "state": "Missouri",
+      "crop_id": 75,
+      "region_id": 29
+    },
+    {
+      "crop": "Vetch, Hairy",
+      "state": "Missouri",
+      "crop_id": 34,
+      "region_id": 29
+    },
+    {
+      "crop": "Wheat, Winter",
+      "state": "Missouri",
+      "crop_id": 13,
+      "region_id": 29
+    },
+    {
+      "crop": "Barley, spring",
+      "state": "Nebraska",
+      "crop_id": 33,
+      "region_id": 31
+    },
+    {
+      "crop": "Barley, winter",
+      "state": "Nebraska",
+      "crop_id": 32,
+      "region_id": 31
+    },
+    {
+      "crop": "Beans, Mung",
+      "state": "Nebraska",
+      "crop_id": 112,
+      "region_id": 31
+    },
+    {
+      "crop": "Buckwheat",
+      "state": "Nebraska",
+      "crop_id": 12,
+      "region_id": 31
+    },
+    {
+      "crop": "Cabbage, African",
+      "state": "Nebraska",
+      "crop_id": 116,
+      "region_id": 31
+    },
+    {
+      "crop": "Chickpea (desi-type)",
+      "state": "Nebraska",
+      "crop_id": 53,
+      "region_id": 31
+    },
+    {
+      "crop": "Clover, Balansa",
+      "state": "Nebraska",
+      "crop_id": 45,
+      "region_id": 31
+    },
+    {
+      "crop": "Clover, Berseem",
+      "state": "Nebraska",
+      "crop_id": 44,
+      "region_id": 31
+    },
+    {
+      "crop": "Clover, Crimson",
+      "state": "Nebraska",
+      "crop_id": 43,
+      "region_id": 31
+    },
+    {
+      "crop": "Clover, red",
+      "state": "Nebraska",
+      "crop_id": 42,
+      "region_id": 31
+    },
+    {
+      "crop": "Collards, Forage",
+      "state": "Nebraska",
+      "crop_id": 122,
+      "region_id": 31
+    },
+    {
+      "crop": "Corn (BMR)",
+      "state": "Nebraska",
+      "crop_id": 29,
+      "region_id": 31
+    },
+    {
+      "crop": "Cowpea",
+      "state": "Nebraska",
+      "crop_id": 40,
+      "region_id": 31
+    },
+    {
+      "crop": "Flax",
+      "state": "Nebraska",
+      "crop_id": 126,
+      "region_id": 31
+    },
+    {
+      "crop": "Kale",
+      "state": "Nebraska",
+      "crop_id": 130,
+      "region_id": 31
+    },
+    {
+      "crop": "Lentil, spring",
+      "state": "Nebraska",
+      "crop_id": 131,
+      "region_id": 31
+    },
+    {
+      "crop": "Lentil, winter",
+      "state": "Nebraska",
+      "crop_id": 131,
+      "region_id": 31
+    },
+    {
+      "crop": "Millet, foxtail (German)",
+      "state": "Nebraska",
+      "crop_id": 64,
+      "region_id": 31
+    },
+    {
+      "crop": "Millet, pearl",
+      "state": "Nebraska",
+      "crop_id": 26,
+      "region_id": 31
+    },
+    {
+      "crop": "Millet, proso",
+      "state": "Nebraska",
+      "crop_id": 65,
+      "region_id": 31
+    },
+    {
+      "crop": "Mustard",
+      "state": "Nebraska",
+      "crop_id": 8,
+      "region_id": 31
+    },
+    {
+      "crop": "Oats, black",
+      "state": "Nebraska",
+      "crop_id": 25,
+      "region_id": 31
+    },
+    {
+      "crop": "Oats, spring",
+      "state": "Nebraska",
+      "crop_id": 23,
+      "region_id": 31
+    },
+    {
+      "crop": "Oats, winter",
+      "state": "Nebraska",
+      "crop_id": 25,
+      "region_id": 31
+    },
+    {
+      "crop": "Pea, Spring Field",
+      "state": "Nebraska",
+      "crop_id": 39,
+      "region_id": 31
+    },
+    {
+      "crop": "Pea, Spring Forage",
+      "state": "Nebraska",
+      "crop_id": 39,
+      "region_id": 31
+    },
+    {
+      "crop": "Pea, Winter",
+      "state": "Nebraska",
+      "crop_id": 38,
+      "region_id": 31
+    },
+    {
+      "crop": "Radish",
+      "state": "Nebraska",
+      "crop_id": 154,
+      "region_id": 31
+    },
+    {
+      "crop": "Rapeseed/Canola",
+      "state": "Nebraska",
+      "crop_id": 161,
+      "region_id": 31
+    },
+    {
+      "crop": "Rye, Cereal:  Elbon",
+      "state": "Nebraska",
+      "crop_id": 22,
+      "region_id": 31
+    },
+    {
+      "crop": "Rye, Cereal: VNS Northern",
+      "state": "Nebraska",
+      "crop_id": 22,
+      "region_id": 31
+    },
+    {
+      "crop": "Ryegrass, Annual",
+      "state": "Nebraska",
+      "crop_id": 22,
+      "region_id": 31
+    },
+    {
+      "crop": "Safflower",
+      "state": "Nebraska",
+      "crop_id": 166,
+      "region_id": 31
+    },
+    {
+      "crop": "Sorghum, forage",
+      "state": "Nebraska",
+      "crop_id": 167,
+      "region_id": 31
+    },
+    {
+      "crop": "Sorghum-sudan hybrid",
+      "state": "Nebraska",
+      "crop_id": 20,
+      "region_id": 31
+    },
+    {
+      "crop": "Soybean",
+      "state": "Nebraska",
+      "crop_id": 37,
+      "region_id": 31
+    },
+    {
+      "crop": "Sudangrass",
+      "state": "Nebraska",
+      "crop_id": 18,
+      "region_id": 31
+    },
+    {
+      "crop": "Sunflower",
+      "state": "Nebraska",
+      "crop_id": 10,
+      "region_id": 31
+    },
+    {
+      "crop": "Sunn Hemp",
+      "state": "Nebraska",
+      "crop_id": 36,
+      "region_id": 31
+    },
+    {
+      "crop": "Sweetclover",
+      "state": "Nebraska",
+      "crop_id": 182,
+      "region_id": 31
+    },
+    {
+      "crop": "Teff",
+      "state": "Nebraska",
+      "crop_id": 17,
+      "region_id": 31
+    },
+    {
+      "crop": "Triticale,spring",
+      "state": "Nebraska",
+      "crop_id": 15,
+      "region_id": 31
+    },
+    {
+      "crop": "Triticale, winter",
+      "state": "Nebraska",
+      "crop_id": 15,
+      "region_id": 31
+    },
+    {
+      "crop": "Turnip",
+      "state": "Nebraska",
+      "crop_id": 75,
+      "region_id": 31
+    },
+    {
+      "crop": "Turnip, Hybrid Grazing",
+      "state": "Nebraska",
+      "crop_id": 75,
+      "region_id": 31
+    },
+    {
+      "crop": "Vetch, Chickling",
+      "state": "Nebraska",
+      "crop_id": 77,
+      "region_id": 31
+    },
+    {
+      "crop": "Vetch, common",
+      "state": "Nebraska",
+      "crop_id": 78,
+      "region_id": 31
+    },
+    {
+      "crop": "Vetch, hairy",
+      "state": "Nebraska",
+      "crop_id": 34,
+      "region_id": 31
+    },
+    {
+      "crop": "Vetch, woolypod (Lana)",
+      "state": "Nebraska",
+      "crop_id": 34,
+      "region_id": 31
+    },
+    {
+      "crop": "Wheat (spring)",
+      "state": "Nebraska",
+      "crop_id": 14,
+      "region_id": 31
+    },
+    {
+      "crop": "Wheat (winter)",
+      "state": "Nebraska",
+      "crop_id": 13,
+      "region_id": 31
+    },
+    {
+      "crop": "Barley",
+      "state": "North Dakota",
+      "crop_id": 32,
+      "region_id": 38
+    },
+    {
+      "crop": "Beans, Horse (Faba)",
+      "state": "North Dakota",
+      "crop_id": 112,
+      "region_id": 38
+    },
+    {
+      "crop": "Buckwheat",
+      "state": "North Dakota",
+      "crop_id": 12,
+      "region_id": 38
+    },
+    {
+      "crop": "Camelina, Winter",
+      "state": "North Dakota",
+      "crop_id": 119,
+      "region_id": 38
+    },
+    {
+      "crop": "Clover, Berseem",
+      "state": "North Dakota",
+      "crop_id": 44,
+      "region_id": 38
+    },
+    {
+      "crop": "Clover, Crimson",
+      "state": "North Dakota",
+      "crop_id": 43,
+      "region_id": 38
+    },
+    {
+      "crop": "Clover, Red",
+      "state": "North Dakota",
+      "crop_id": 42,
+      "region_id": 38
+    },
+    {
+      "crop": "Cowpea ",
+      "state": "North Dakota",
+      "crop_id": 40,
+      "region_id": 38
+    },
+    {
+      "crop": "Flax",
+      "state": "North Dakota",
+      "crop_id": 126,
+      "region_id": 38
+    },
+    {
+      "crop": "Kale",
+      "state": "North Dakota",
+      "crop_id": 130,
+      "region_id": 38
+    },
+    {
+      "crop": "Lentils",
+      "state": "North Dakota",
+      "crop_id": 131,
+      "region_id": 38
+    },
+    {
+      "crop": "Oats",
+      "state": "North Dakota",
+      "crop_id": 25,
+      "region_id": 38
+    },
+    {
+      "crop": "Pea, Field/Forage",
+      "state": "North Dakota",
+      "crop_id": 147,
+      "region_id": 38
+    },
+    {
+      "crop": "Phacelia",
+      "state": "North Dakota",
+      "crop_id": 11,
+      "region_id": 38
+    },
+    {
+      "crop": "Radish",
+      "state": "North Dakota",
+      "crop_id": 154,
+      "region_id": 38
+    },
+    {
+      "crop": "Ryegrass, Annual",
+      "state": "North Dakota",
+      "crop_id": 22,
+      "region_id": 38
+    },
+    {
+      "crop": "Rye, Winter ",
+      "state": "North Dakota",
+      "crop_id": 164,
+      "region_id": 38
+    },
+    {
+      "crop": "Safflower",
+      "state": "North Dakota",
+      "crop_id": 166,
+      "region_id": 38
+    },
+    {
+      "crop": "Soybean",
+      "state": "North Dakota",
+      "crop_id": 37,
+      "region_id": 38
+    },
+    {
+      "crop": "Sugarbeet",
+      "state": "North Dakota",
+      "crop_id": 174,
+      "region_id": 38
+    },
+    {
+      "crop": "Sunflower",
+      "state": "North Dakota",
+      "crop_id": 10,
+      "region_id": 38
+    },
+    {
+      "crop": "Sunn Hemp",
+      "state": "North Dakota",
+      "crop_id": 36,
+      "region_id": 38
+    },
+    {
+      "crop": "Sweetclover",
+      "state": "North Dakota",
+      "crop_id": 182,
+      "region_id": 38
+    },
+    {
+      "crop": "Teff",
+      "state": "North Dakota",
+      "crop_id": 17,
+      "region_id": 38
+    },
+    {
+      "crop": "Triticale ",
+      "state": "North Dakota",
+      "crop_id": 15,
+      "region_id": 38
+    },
+    {
+      "crop": "Turnip",
+      "state": "North Dakota",
+      "crop_id": 75,
+      "region_id": 38
+    },
+    {
+      "crop": "Vetch, Chickling",
+      "state": "North Dakota",
+      "crop_id": 77,
+      "region_id": 38
+    },
+    {
+      "crop": "Vetch, Common",
+      "state": "North Dakota",
+      "crop_id": 78,
+      "region_id": 38
+    },
+    {
+      "crop": "Vetch, Hairy ",
+      "state": "North Dakota",
+      "crop_id": 34,
+      "region_id": 38
+    },
+    {
+      "crop": "Wheat, Spring",
+      "state": "North Dakota",
+      "crop_id": 14,
+      "region_id": 38
+    },
+    {
+      "crop": "Wheat, Winter",
+      "state": "North Dakota",
+      "crop_id": 13,
+      "region_id": 38
+    },
+    {
+      "crop": "Barley, Winter",
+      "state": "Ohio",
+      "crop_id": 32,
+      "region_id": 39
+    },
+    {
+      "crop": "Beans, Faba",
+      "state": "Ohio",
+      "crop_id": 110,
+      "region_id": 39
+    },
+    {
+      "crop": "Buckwheat",
+      "state": "Ohio",
+      "crop_id": 12,
+      "region_id": 39
+    },
+    {
+      "crop": "Clover, Balansa",
+      "state": "Ohio",
+      "crop_id": 45,
+      "region_id": 39
+    },
+    {
+      "crop": "Clover, Berseem",
+      "state": "Ohio",
+      "crop_id": 44,
+      "region_id": 39
+    },
+    {
+      "crop": "Clover, Crimson",
+      "state": "Ohio",
+      "crop_id": 43,
+      "region_id": 39
+    },
+    {
+      "crop": "Clover, Red",
+      "state": "Ohio",
+      "crop_id": 42,
+      "region_id": 39
+    },
+    {
+      "crop": "Cowpea",
+      "state": "Ohio",
+      "crop_id": 40,
+      "region_id": 39
+    },
+    {
+      "crop": "Flax ",
+      "state": "Ohio",
+      "crop_id": 126,
+      "region_id": 39
+    },
+    {
+      "crop": "Millet, Japanese",
+      "state": "Ohio",
+      "crop_id": 28,
+      "region_id": 39
+    },
+    {
+      "crop": "Millet, Pearl",
+      "state": "Ohio",
+      "crop_id": 26,
+      "region_id": 39
+    },
+    {
+      "crop": "Oats ",
+      "state": "Ohio",
+      "crop_id": 25,
+      "region_id": 39
+    },
+    {
+      "crop": "Pea, Winter",
+      "state": "Ohio",
+      "crop_id": 38,
+      "region_id": 39
+    },
+    {
+      "crop": "Radish, Oilseed",
+      "state": "Ohio",
+      "crop_id": 154,
+      "region_id": 39
+    },
+    {
+      "crop": "Rapeseed/Kale",
+      "state": "Ohio",
+      "crop_id": 161,
+      "region_id": 39
+    },
+    {
+      "crop": "Ryegrass, Annual",
+      "state": "Ohio",
+      "crop_id": 22,
+      "region_id": 39
+    },
+    {
+      "crop": "Rye, Winter",
+      "state": "Ohio",
+      "crop_id": 164,
+      "region_id": 39
+    },
+    {
+      "crop": "Sorghum-Sudangrass",
+      "state": "Ohio",
+      "crop_id": 19,
+      "region_id": 39
+    },
+    {
+      "crop": "Sudangrass",
+      "state": "Ohio",
+      "crop_id": 18,
+      "region_id": 39
+    },
+    {
+      "crop": "Sugarbeet",
+      "state": "Ohio",
+      "crop_id": 174,
+      "region_id": 39
+    },
+    {
+      "crop": "Sunflower",
+      "state": "Ohio",
+      "crop_id": 10,
+      "region_id": 39
+    },
+    {
+      "crop": "Sunn Hemp",
+      "state": "Ohio",
+      "crop_id": 36,
+      "region_id": 39
+    },
+    {
+      "crop": "Sweetclover, Yellow",
+      "state": "Ohio",
+      "crop_id": 182,
+      "region_id": 39
+    },
+    {
+      "crop": "Teff ",
+      "state": "Ohio",
+      "crop_id": 17,
+      "region_id": 39
+    },
+    {
+      "crop": "Triticale, Winter",
+      "state": "Ohio",
+      "crop_id": 15,
+      "region_id": 39
+    },
+    {
+      "crop": "Turnip ",
+      "state": "Ohio",
+      "crop_id": 75,
+      "region_id": 39
+    },
+    {
+      "crop": "Vetch, Hairy ",
+      "state": "Ohio",
+      "crop_id": 34,
+      "region_id": 39
+    },
+    {
+      "crop": "Wheat, Winter",
+      "state": "Ohio",
+      "crop_id": 13,
+      "region_id": 39
+    },
+    {
+      "crop": "Alfalfa ",
+      "state": "Wisconsin",
+      "crop_id": 105,
+      "region_id": 53
+    },
+    {
+      "crop": "Barley, Spring ",
+      "state": "Wisconsin",
+      "crop_id": 33,
+      "region_id": 53
+    },
+    {
+      "crop": "Barley, Winter",
+      "state": "Wisconsin",
+      "crop_id": 32,
+      "region_id": 53
+    },
+    {
+      "crop": "Buckwheat",
+      "state": "Wisconsin",
+      "crop_id": 12,
+      "region_id": 53
+    },
+    {
+      "crop": "Clover, Berseem",
+      "state": "Wisconsin",
+      "crop_id": 44,
+      "region_id": 53
+    },
+    {
+      "crop": "Clover, Crimson",
+      "state": "Wisconsin",
+      "crop_id": 43,
+      "region_id": 53
+    },
+    {
+      "crop": "Clover, Red",
+      "state": "Wisconsin",
+      "crop_id": 42,
+      "region_id": 53
+    },
+    {
+      "crop": "Cowpea",
+      "state": "Wisconsin",
+      "crop_id": 40,
+      "region_id": 53
+    },
+    {
+      "crop": "Millet, Japanese",
+      "state": "Wisconsin",
+      "crop_id": 28,
+      "region_id": 53
+    },
+    {
+      "crop": "Millet, Pearl",
+      "state": "Wisconsin",
+      "crop_id": 26,
+      "region_id": 53
+    },
+    {
+      "crop": "Oats ",
+      "state": "Wisconsin",
+      "crop_id": 25,
+      "region_id": 53
+    },
+    {
+      "crop": "Pea, Field/Forage",
+      "state": "Wisconsin",
+      "crop_id": 147,
+      "region_id": 53
+    },
+    {
+      "crop": "Pea, Winter",
+      "state": "Wisconsin",
+      "crop_id": 38,
+      "region_id": 53
+    },
+    {
+      "crop": "Radish, Oilseed or Forage",
+      "state": "Wisconsin",
+      "crop_id": 154,
+      "region_id": 53
+    },
+    {
+      "crop": "Rapeseed",
+      "state": "Wisconsin",
+      "crop_id": 161,
+      "region_id": 53
+    },
+    {
+      "crop": "Ryegrass, Annual",
+      "state": "Wisconsin",
+      "crop_id": 22,
+      "region_id": 53
+    },
+    {
+      "crop": "Rye, Winter Cereal",
+      "state": "Wisconsin",
+      "crop_id": 164,
+      "region_id": 53
+    },
+    {
+      "crop": "Sorghum-sudangrass",
+      "state": "Wisconsin",
+      "crop_id": 19,
+      "region_id": 53
+    },
+    {
+      "crop": "Sudangrass",
+      "state": "Wisconsin",
+      "crop_id": 18,
+      "region_id": 53
+    },
+    {
+      "crop": "Sunflower ",
+      "state": "Wisconsin",
+      "crop_id": 10,
+      "region_id": 53
+    },
+    {
+      "crop": "Triticale, Winter",
+      "state": "Wisconsin",
+      "crop_id": 15,
+      "region_id": 53
+    },
+    {
+      "crop": "Turnip, Forage type",
+      "state": "Wisconsin",
+      "crop_id": 75,
+      "region_id": 53
+    },
+    {
+      "crop": "Vetch, Hairy",
+      "state": "Wisconsin",
+      "crop_id": 34,
+      "region_id": 53
+    },
+    {
+      "crop": "Wheat, Spring",
+      "state": "Wisconsin",
+      "crop_id": 14,
+      "region_id": 53
+    },
+    {
+      "crop": "Wheat, Winter",
+      "state": "Wisconsin",
+      "crop_id": 13,
+      "region_id": 53
+    },
+    {
+      "crop": "Barley (Spring)",
+      "state": "Kansas",
+      "crop_id": 33,
+      "region_id": 20
+    },
+    {
+      "crop": "Barley (Winter)",
+      "state": "Kansas",
+      "crop_id": 32,
+      "region_id": 20
+    },
+    {
+      "crop": "Bean, Mung",
+      "state": "Kansas",
+      "crop_id": 112,
+      "region_id": 20
+    },
+    {
+      "crop": "Buckwheat",
+      "state": "Kansas",
+      "crop_id": 12,
+      "region_id": 20
+    },
+    {
+      "crop": "Cabbage, Ethiopian",
+      "state": "Kansas",
+      "crop_id": 117,
+      "region_id": 20
+    },
+    {
+      "crop": "Clover, Crimson",
+      "state": "Kansas",
+      "crop_id": 43,
+      "region_id": 20
+    },
+    {
+      "crop": "Clover, Red",
+      "state": "Kansas",
+      "crop_id": 42,
+      "region_id": 20
+    },
+    {
+      "crop": "Cowpeas",
+      "state": "Kansas",
+      "crop_id": 40,
+      "region_id": 20
+    },
+    {
+      "crop": "Flax",
+      "state": "Kansas",
+      "crop_id": 126,
+      "region_id": 20
+    },
+    {
+      "crop": "Guar",
+      "state": "Kansas",
+      "crop_id": 129,
+      "region_id": 20
+    },
+    {
+      "crop": "Hybrid Forage Turnip",
+      "state": "Kansas",
+      "crop_id": 75,
+      "region_id": 20
+    },
+    {
+      "crop": "Lentils, Spring",
+      "state": "Kansas",
+      "crop_id": 131,
+      "region_id": 20
+    },
+    {
+      "crop": "Lentils, Winter",
+      "state": "Kansas",
+      "crop_id": 131,
+      "region_id": 20
+    },
+    {
+      "crop": "Millet, German",
+      "state": "Kansas",
+      "crop_id": 135,
+      "region_id": 20
+    },
+    {
+      "crop": "Millet, Pearl",
+      "state": "Kansas",
+      "crop_id": 26,
+      "region_id": 20
+    },
+    {
+      "crop": "Millet, Proso",
+      "state": "Kansas",
+      "crop_id": 65,
+      "region_id": 20
+    },
+    {
+      "crop": "Mustard",
+      "state": "Kansas",
+      "crop_id": 8,
+      "region_id": 20
+    },
+    {
+      "crop": "Oats, Spring",
+      "state": "Kansas",
+      "crop_id": 23,
+      "region_id": 20
+    },
+    {
+      "crop": "Oats, Winter",
+      "state": "Kansas",
+      "crop_id": 25,
+      "region_id": 20
+    },
+    {
+      "crop": "Pea, Field",
+      "state": "Kansas",
+      "crop_id": 146,
+      "region_id": 20
+    },
+    {
+      "crop": "Pea, Winter",
+      "state": "Kansas",
+      "crop_id": 38,
+      "region_id": 20
+    },
+    {
+      "crop": "Radish, Grazer",
+      "state": "Kansas",
+      "crop_id": 154,
+      "region_id": 20
+    },
+    {
+      "crop": "Radish, Oilseed",
+      "state": "Kansas",
+      "crop_id": 154,
+      "region_id": 20
+    },
+    {
+      "crop": "Rapeseed/Canola",
+      "state": "Kansas",
+      "crop_id": 161,
+      "region_id": 20
+    },
+    {
+      "crop": "Rye, Cereal",
+      "state": "Kansas",
+      "crop_id": 22,
+      "region_id": 20
+    },
+    {
+      "crop": "Ryegrass, Annual",
+      "state": "Kansas",
+      "crop_id": 22,
+      "region_id": 20
+    },
+    {
+      "crop": "Safflower",
+      "state": "Kansas",
+      "crop_id": 166,
+      "region_id": 20
+    },
+    {
+      "crop": "Sorghum, Forage",
+      "state": "Kansas",
+      "crop_id": 167,
+      "region_id": 20
+    },
+    {
+      "crop": "Sorghum-sudangrass",
+      "state": "Kansas",
+      "crop_id": 19,
+      "region_id": 20
+    },
+    {
+      "crop": "Soybean",
+      "state": "Kansas",
+      "crop_id": 37,
+      "region_id": 20
+    },
+    {
+      "crop": "Sunflower",
+      "state": "Kansas",
+      "crop_id": 10,
+      "region_id": 20
+    },
+    {
+      "crop": "Sunn Hemp",
+      "state": "Kansas",
+      "crop_id": 36,
+      "region_id": 20
+    },
+    {
+      "crop": "Sweetclover",
+      "state": "Kansas",
+      "crop_id": 182,
+      "region_id": 20
+    },
+    {
+      "crop": "Teff ",
+      "state": "Kansas",
+      "crop_id": 17,
+      "region_id": 20
+    },
+    {
+      "crop": "Triticale, Spring",
+      "state": "Kansas",
+      "crop_id": 16,
+      "region_id": 20
+    },
+    {
+      "crop": "Triticale, Winter",
+      "state": "Kansas",
+      "crop_id": 15,
+      "region_id": 20
+    },
+    {
+      "crop": "Turnip",
+      "state": "Kansas",
+      "crop_id": 75,
+      "region_id": 20
+    },
+    {
+      "crop": "Vetch, Chickling",
+      "state": "Kansas",
+      "crop_id": 77,
+      "region_id": 20
+    },
+    {
+      "crop": "Vetch, Common",
+      "state": "Kansas",
+      "crop_id": 78,
+      "region_id": 20
+    },
+    {
+      "crop": "Vetch, Hairy",
+      "state": "Kansas",
+      "crop_id": 34,
+      "region_id": 20
+    },
+    {
+      "crop": "Wheat, Spring",
+      "state": "Kansas",
+      "crop_id": 14,
+      "region_id": 20
+    },
+    {
+      "crop": "Wheat, Winter",
+      "state": "Kansas",
+      "crop_id": 13,
+      "region_id": 20
+    },
+    {
+      "crop": "Alfalfa",
+      "state": "South Dakota",
+      "crop_id": 105,
+      "region_id": 45
+    },
+    {
+      "crop": "Barley",
+      "state": "South Dakota",
+      "crop_id": 32,
+      "region_id": 45
+    },
+    {
+      "crop": "Brassica Hybrids",
+      "state": "South Dakota",
+      "crop_id": 113,
+      "region_id": 45
+    },
+    {
+      "crop": "Buckwheat ",
+      "state": "South Dakota",
+      "crop_id": 12,
+      "region_id": 45
+    },
+    {
+      "crop": "Camelina, Winter",
+      "state": "South Dakota",
+      "crop_id": 119,
+      "region_id": 45
+    },
+    {
+      "crop": "Clover, Crimson",
+      "state": "South Dakota",
+      "crop_id": 43,
+      "region_id": 45
+    },
+    {
+      "crop": "Clover, Red ",
+      "state": "South Dakota",
+      "crop_id": 42,
+      "region_id": 45
+    },
+    {
+      "crop": "Collards or Kale",
+      "state": "South Dakota",
+      "crop_id": 122,
+      "region_id": 45
+    },
+    {
+      "crop": "Corn",
+      "state": "South Dakota",
+      "crop_id": 29,
+      "region_id": 45
+    },
+    {
+      "crop": "Cowpeas/Dry Beans",
+      "state": "South Dakota",
+      "crop_id": 40,
+      "region_id": 45
+    },
+    {
+      "crop": "Flax",
+      "state": "South Dakota",
+      "crop_id": 126,
+      "region_id": 45
+    },
+    {
+      "crop": "Lentils",
+      "state": "South Dakota",
+      "crop_id": 131,
+      "region_id": 45
+    },
+    {
+      "crop": "Millet, Proso",
+      "state": "South Dakota",
+      "crop_id": 65,
+      "region_id": 45
+    },
+    {
+      "crop": "Mustard",
+      "state": "South Dakota",
+      "crop_id": 8,
+      "region_id": 45
+    },
+    {
+      "crop": "Oats",
+      "state": "South Dakota",
+      "crop_id": 25,
+      "region_id": 45
+    },
+    {
+      "crop": "Peas",
+      "state": "South Dakota",
+      "crop_id": 151,
+      "region_id": 45
+    },
+    {
+      "crop": "Radish",
+      "state": "South Dakota",
+      "crop_id": 154,
+      "region_id": 45
+    },
+    {
+      "crop": "Rapeseed",
+      "state": "South Dakota",
+      "crop_id": 161,
+      "region_id": 45
+    },
+    {
+      "crop": "Ryegrass, Annual",
+      "state": "South Dakota",
+      "crop_id": 22,
+      "region_id": 45
+    },
+    {
+      "crop": "Rye, Winter Cereal ",
+      "state": "South Dakota",
+      "crop_id": 164,
+      "region_id": 45
+    },
+    {
+      "crop": "Safflower",
+      "state": "South Dakota",
+      "crop_id": 166,
+      "region_id": 45
+    },
+    {
+      "crop": "Sorghum, Forage ",
+      "state": "South Dakota",
+      "crop_id": 167,
+      "region_id": 45
+    },
+    {
+      "crop": "Soybeans",
+      "state": "South Dakota",
+      "crop_id": 197,
+      "region_id": 45
+    },
+    {
+      "crop": "Sudangrass",
+      "state": "South Dakota",
+      "crop_id": 18,
+      "region_id": 45
+    },
+    {
+      "crop": "Sugarbeet",
+      "state": "South Dakota",
+      "crop_id": 174,
+      "region_id": 45
+    },
+    {
+      "crop": "Sunflower - Black Oil",
+      "state": "South Dakota",
+      "crop_id": 10,
+      "region_id": 45
+    },
+    {
+      "crop": "Sunn Hemp",
+      "state": "South Dakota",
+      "crop_id": 36,
+      "region_id": 45
+    },
+    {
+      "crop": "Sweetclover",
+      "state": "South Dakota",
+      "crop_id": 182,
+      "region_id": 45
+    },
+    {
+      "crop": "Teff ",
+      "state": "South Dakota",
+      "crop_id": 17,
+      "region_id": 45
+    },
+    {
+      "crop": "Triticale, Spring",
+      "state": "South Dakota",
+      "crop_id": 16,
+      "region_id": 45
+    },
+    {
+      "crop": "Turnip",
+      "state": "South Dakota",
+      "crop_id": 75,
+      "region_id": 45
+    },
+    {
+      "crop": "Vetch, Chickling",
+      "state": "South Dakota",
+      "crop_id": 77,
+      "region_id": 45
+    },
+    {
+      "crop": "Vetch, Common",
+      "state": "South Dakota",
+      "crop_id": 78,
+      "region_id": 45
+    },
+    {
+      "crop": "Vetch, Hairy",
+      "state": "South Dakota",
+      "crop_id": 34,
+      "region_id": 45
+    },
+    {
+      "crop": "Wheat, Spring",
+      "state": "South Dakota",
+      "crop_id": 14,
+      "region_id": 45
+    },
+    {
+      "crop": "Wheat, Winter",
+      "state": "South Dakota",
+      "crop_id": 13,
+      "region_id": 45
+    }
+]

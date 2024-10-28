@@ -1,5 +1,4 @@
 
-
 class It {
 
     static ShouldReturnStatus(req, status){
@@ -66,6 +65,10 @@ class It {
 }
 
 class Expect {
+
+    static Truthy(obj) {
+        expect(obj).toBeTruthy();
+    }
 
     static DatabaseRecord(record) {
         expect(record.id).toBeTruthy();
